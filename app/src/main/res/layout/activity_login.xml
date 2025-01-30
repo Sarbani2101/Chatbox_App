@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.LoginActivity">
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:fontFamily="@font/caros_font"
+        android:text="Log in to Chat App"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtDes"
+        android:layout_width="293dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="39dp"
+        android:fontFamily="@font/circular_font"
+        android:text="Welcome back! Sign in using your social account or email to continue us"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtName"
+        tools:ignore="MissingConstraints" />
+
+
+
+    <ImageView
+        android:id="@+id/fb_Img"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="135dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="100dp"
+        app:layout_constraintEnd_toStartOf="@+id/gg_Img"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtDes"
+        app:srcCompat="@drawable/ic_facebook" />
+
+
+
+    <ImageView
+        android:id="@+id/gg_Img"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="135dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fb_Img"
+        app:layout_constraintTop_toBottomOf="@+id/txtDes"
+        app:srcCompat="@drawable/ic_google" />
+
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="150dp"
+        android:layout_height="2dp"
+
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="229dp"
+        android:background="#646465"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fb_Img" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="OR"
+        android:textColor="@color/black"
+        android:fontFamily="@font/circular_font"
+        app:layout_constraintEnd_toStartOf="@+id/view_02"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toBottomOf="@+id/txtDes" />
+    <View
+        android:id="@+id/view_02"
+        android:layout_width="150dp"
+        android:layout_height="2dp"
+        android:layout_marginStart="229dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:background="#646465"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gg_Img" />
+
+    <TextView
+        android:id="@+id/txtEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="318dp"
+        android:fontFamily="@font/circular_font"
+        android:text="Email"
+        android:textColor="@color/cyan"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
+
+    <EditText
+        android:id="@+id/edt_Email"
+        android:layout_width="327dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="41dp"
+        android:ems="10"
+        android:textColor="@color/black"
+        android:text=""
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+
+    <TextView
+        android:id="@+id/errorEmail"
+        android:layout_width="327dp"
+        android:layout_height="wrap_content"
+        android:textColor="#FF0000"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_Email" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="278dp"
+        android:fontFamily="@font/circular_font"
+        android:text="Password"
+        android:textColor="@color/cyan"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_Email" />
+
+    <EditText
+        android:id="@+id/edt_Pass"
+        android:layout_width="327dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="41dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="41dp"
+        android:ems="10"
+        android:text=""
+        android:textColor="@color/black"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/errorPass"
+        android:layout_width="327dp"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        android:textColor="#FF0000"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edt_Pass" />
+
+    <ImageView
+        android:id="@+id/log_Border"
+        android:layout_width="327dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="600dp"
+        android:background="@drawable/log_border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/logTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="612dp"
+        android:fontFamily="@font/caros_font"
+        android:text="Log In"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/forgotTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/circular_font"
+        android:text="Forgot password?"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logTxt" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

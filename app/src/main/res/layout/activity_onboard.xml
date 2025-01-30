@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".activities.OnboardActivity">
+
+    <ImageView
+        android:id="@+id/backgroundImg"
+        android:layout_width="match_parent"
+        android:layout_height="515dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ellipse_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="77dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImg"
+        app:srcCompat="@drawable/logo_board" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="338dp"
+        android:layout_height="312dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="100dp"
+        android:fontFamily="@font/caros_font"
+        android:textStyle="bold"
+        android:text="@string/content_name"
+        android:textColor="@color/white"
+        android:textSize="64dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImg" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="284dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="430dp"
+        android:fontFamily="@font/circular_font"
+        android:text="Our chat app is the perfect way to stay connected with friends and family."
+        android:textColor="#B9C1BE"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgFb"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="500dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/facebook" />
+
+    <ImageView
+        android:id="@+id/imgGoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="500dp"
+        android:layout_marginEnd="120dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/google"
+        tools:ignore="DuplicateIds" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="150dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="578dp"
+        android:layout_marginEnd="229dp"
+        android:background="#D6E4E0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="572dp"
+        android:fontFamily="@font/circular_font"
+        android:text="OR"
+        android:textColor="#D6E4E0"
+        app:layout_constraintEnd_toStartOf="@+id/view_02"
+        app:layout_constraintStart_toEndOf="@+id/view"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view_02"
+        android:layout_width="150dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="229dp"
+        android:layout_marginTop="578dp"
+        android:layout_marginEnd="32dp"
+        android:background="#D6E4E0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnSignup"
+        android:layout_width="327dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="600dp"
+        android:backgroundTint="@color/white"
+        android:text="Sign up within mail"
+        android:textColor="@color/black"
+        app:cornerRadius="16dp"
+        android:fontFamily="@font/caros_font"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="660dp"
+        android:fontFamily="@font/circular_font"
+        android:text="Existing account? Log in"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImg" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

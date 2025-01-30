@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- story_list.xml -->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:background="@color/black"
+    android:elevation="4dp"
+    android:radius="8dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:background="@color/black"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <!-- Story Image -->
+
+        <!-- Story Title -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/storyImage"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="Story Image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_default_story_image"
+            tools:ignore="MissingClass" />
+
+        <TextView
+            android:id="@+id/storyTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="@font/circular_font"
+            android:gravity="center_horizontal"
+            android:maxLines="1"
+            android:text="Name"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

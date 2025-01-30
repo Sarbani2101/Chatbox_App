@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/messageFragment">
+
+    <fragment
+        android:id="@+id/messageFragment"
+        android:name="com.example.chatbox_app.fragments.MessageFragment"
+        android:label="Messages"
+        tools:layout="@layout/fragment_message" />
+
+    <fragment
+        android:id="@+id/callsFragment"
+        android:name="com.example.chatbox_app.fragments.CallsFragment"
+        android:label="Calls"
+        tools:layout="@layout/fragment_calls" />
+
+    <fragment
+        android:id="@+id/contactsFragment"
+        android:name="com.example.chatbox_app.fragments.ContactsFragment"
+        android:label="Contacts"
+        tools:layout="@layout/fragment_contacts" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.chatbox_app.fragments.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
+</navigation>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="2dp"
+    android:radius="12dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:background="@color/white"
+        android:gravity="center_vertical">
+
+        <!-- User Profile Image -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/userProfileImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_default_profile_image"
+            android:contentDescription="User Profile"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop" />
+
+        <!-- Chat Details -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <!-- User Name -->
+            <TextView
+                android:id="@+id/callName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="User Name"
+                android:fontFamily="@font/caros_font"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- Message Preview -->
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is a message preview..."
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                android:fontFamily="@font/circular_font"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+        <!-- Call Button -->
+
+        <ImageView
+            android:id="@+id/callIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_calling"/>
+
+        <!-- Video Call Button -->
+
+        <ImageView
+            android:id="@+id/videoIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_video"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
