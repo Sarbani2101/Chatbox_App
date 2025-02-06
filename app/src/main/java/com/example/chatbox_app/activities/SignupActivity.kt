@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationServices
 import java.io.IOException
 import java.util.Locale
 
+@Suppress("DEPRECATION")
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var auth: FirebaseAuth
@@ -107,6 +108,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun validateInputs(name: String, email: String, pass: String, conPass: String): Boolean {
         if (name.isEmpty()) {
             binding.edtName.error = "Name is required"

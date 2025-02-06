@@ -33,7 +33,7 @@ class CallsAdapter(private val context: Context, private val userList: List<User
         holder.userName.text = user.name
 
         // Load profile image from Base64 or URL
-        if (user.profileImage!!.startsWith("http")) {
+        if (user.profileImage.startsWith("http")) {
             Glide.with(context).load(user.profileImage).into(holder.profileImage)
         } else {
             holder.profileImage.setImageBitmap(decodeBase64(user.profileImage))
