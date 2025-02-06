@@ -65,7 +65,7 @@ class ProfileActivity : AppCompatActivity() {
 
 
                             // Load the profile image using Glide (if it exists)
-                            if (user.profileImage!!.isNotEmpty()) {
+                            if (user.profileImage.isNotEmpty()) {
                                 Glide.with(this@ProfileActivity)
                                     .load(user.profileImage)
                                     .placeholder(R.drawable.ic_default_profile_image) // Placeholder image
