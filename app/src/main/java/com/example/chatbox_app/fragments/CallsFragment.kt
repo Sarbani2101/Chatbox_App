@@ -1,9 +1,8 @@
 package com.example.chatbox_app.fragments
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +43,7 @@ class CallsFragment : Fragment() {
 
     private fun fetchUsers() {
         database.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
                 for (data in snapshot.children) {

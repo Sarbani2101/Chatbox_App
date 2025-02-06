@@ -16,7 +16,8 @@
         android:layout_marginTop="16dp"
         android:src="@drawable/ic_white_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -42,7 +43,8 @@
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/userProfile"
+        tools:ignore="HardcodedText,SpUsage" />
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -59,24 +61,28 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ac_chat" />
+            android:src="@drawable/ac_chat"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ac_call" />
+            android:src="@drawable/ac_call"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
-            android:src="@drawable/ac_vc" />
+            android:src="@drawable/ac_vc"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@drawable/ac_more" />
+            android:src="@drawable/ac_more"
+            tools:ignore="ContentDescription" />
     </LinearLayout>
 
     <LinearLayout
@@ -98,7 +104,8 @@
             android:layout_marginTop="24dp"
             android:fontFamily="@font/circular_font"
             android:text="Display Name"
-            android:textSize="14dp" />
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/nameUser"
@@ -109,8 +116,9 @@
             android:fontFamily="@font/caros_font"
             android:text="Name"
             android:textColor="@color/black"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -120,7 +128,8 @@
 
             android:fontFamily="@font/circular_font"
             android:text="Email Address"
-            android:textSize="14dp" />
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/emailUser"
@@ -131,8 +140,9 @@
             android:fontFamily="@font/caros_font"
             android:text="Email"
             android:textColor="@color/black"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -141,7 +151,8 @@
             android:layout_marginTop="24dp"
             android:fontFamily="@font/circular_font"
             android:text="Address"
-            android:textSize="14dp" />
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/locAddress"
@@ -152,8 +163,9 @@
             android:fontFamily="@font/caros_font"
             android:text="Kolkata "
             android:textColor="@color/black"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
 
 
     </LinearLayout>

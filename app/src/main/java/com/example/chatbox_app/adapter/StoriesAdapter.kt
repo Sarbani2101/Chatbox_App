@@ -24,11 +24,7 @@ class StoriesAdapter(
 
     override fun getItemCount(): Int = userList.size
 
-    fun updateUserList(newUserList: List<User>) {
-        userList.clear()
-        userList.addAll(newUserList)
-        notifyDataSetChanged()
-    }
+
 
     inner class StoriesViewHolder(private val binding: StoryListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
