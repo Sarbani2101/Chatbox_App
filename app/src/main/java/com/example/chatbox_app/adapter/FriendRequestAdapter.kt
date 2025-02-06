@@ -1,5 +1,6 @@
 package com.example.chatbox_app.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.util.Base64
@@ -32,6 +33,7 @@ class FriendRequestAdapter(
         return ViewHolder(view)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val request = requestList[position]
 

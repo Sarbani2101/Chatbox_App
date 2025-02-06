@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
@@ -20,19 +21,22 @@
         android:text="Username"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:paddingStart="10dp" />
+        android:paddingStart="10dp"
+        tools:ignore="HardcodedText,RtlSymmetry" />
 
     <Button
         android:id="@+id/acceptButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/cyan"
-        android:text="Accept" />
+        android:text="Accept"
+        tools:ignore="HardcodedText" />
 
     <Button
         android:id="@+id/rejectButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reject"
-        android:backgroundTint="#E91717" />
+        android:backgroundTint="#E91717"
+        tools:ignore="HardcodedText" />
 </LinearLayout>

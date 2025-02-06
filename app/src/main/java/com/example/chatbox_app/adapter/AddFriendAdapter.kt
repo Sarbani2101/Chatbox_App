@@ -49,8 +49,10 @@ class AddFriendAdapter(
             // Store the request in Firebase
             requestRef.child(it).child(userId).setValue(requestMap)
                 .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        // Successfully sent the request
+                    // Successfully sent the request
+                    when {
+                        !task.isSuccessful -> {
+                        }
                     }
                 }
         }

@@ -26,7 +26,7 @@
             android:contentDescription="Story Image"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_default_story_image"
-            tools:ignore="MissingClass" />
+            tools:ignore="HardcodedText,MissingClass" />
 
         <TextView
             android:id="@+id/storyTitle"
@@ -38,7 +38,8 @@
             android:maxLines="1"
             android:text="Name"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
         <Button
             android:id="@+id/btnAdd"
@@ -47,7 +48,8 @@
             android:text="Add +"
             android:textColor="@color/black"
             android:backgroundTint="@color/white"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
