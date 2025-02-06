@@ -155,7 +155,6 @@ class ChatActivity : AppCompatActivity() {
 
         // Save the chat message to Firebase under the chat ID
         database.child("chats").child(chatId!!).push().setValue(chatMessage)
-        database.child("chats").child(generateChatId()!!).push().setValue(chatMessage)
 
         // Save chat summary (last message and timestamp)
         val chatSummary = Chat(
@@ -167,7 +166,6 @@ class ChatActivity : AppCompatActivity() {
         )
 
         mDbRef.child("chats").child(currentUserId).child(selectedUserId).setValue(chatSummary)
-        mDbRef.child("chats").child(selectedUserId).child(currentUserId).setValue(chatSummary)
 
         // Return to MessageFragment with the new message
         val resultIntent = Intent().apply {

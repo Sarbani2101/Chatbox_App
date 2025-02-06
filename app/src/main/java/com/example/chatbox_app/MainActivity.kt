@@ -19,19 +19,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Load default fragment
+        // Load default fragment on first launch
         if (savedInstanceState == null) {
             replaceFragment(MessageFragment())
         }
 
         // Handle bottom navigation clicks
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.nav_message -> replaceFragment(MessageFragment())
-                R.id.nav_calls -> replaceFragment(CallsFragment())
-                R.id.nav_contacts -> replaceFragment(ContactsFragment())
-                R.id.nav_settings -> replaceFragment(SettingsFragment())
+            val fragment: Fragment = when (menuItem.itemId) {
+                R.id.nav_message -> MessageFragment()
+                R.id.nav_calls -> CallsFragment()
+                R.id.nav_contacts -> ContactsFragment()
+                R.id.nav_settings -> SettingsFragment()
+                else -> MessageFragment()
             }
+            replaceFragment(fragment)
             true
         }
     }
@@ -39,7 +41,6 @@ class MainActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
-            .addToBackStack(null)
-            .commit()
+            .commitNow() // use commitNow to avoid fragment manager back stack build-up
     }
 }
