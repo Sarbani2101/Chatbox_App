@@ -29,6 +29,7 @@ import java.io.IOException
 import java.util.Locale
 
 
+@Suppress("DEPRECATION")
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var auth: FirebaseAuth
@@ -201,6 +202,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun convertLatLngToAddress(latitude: Double, longitude: Double) {
         val geocoder = Geocoder(this, Locale.getDefault())
         Thread {
