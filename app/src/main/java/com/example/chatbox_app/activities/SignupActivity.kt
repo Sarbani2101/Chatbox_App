@@ -78,6 +78,7 @@ class SignupActivity : AppCompatActivity() {
                 val email = binding.edtEmail.text.toString().trim()
                 val pass = binding.edtPass.text.toString().trim()
                 val conPass = binding.edtConPass.text.toString().trim()
+
                 validateAndUpdateUI(name, email, pass, conPass)
             }
 
@@ -86,6 +87,7 @@ class SignupActivity : AppCompatActivity() {
                 val email = binding.edtEmail.text.toString().trim()
                 val pass = binding.edtPass.text.toString().trim()
                 val conPass = binding.edtConPass.text.toString().trim()
+
                 binding.txtCreate.isEnabled = validateInputs(name, email, pass, conPass)
             }
         }
@@ -95,6 +97,7 @@ class SignupActivity : AppCompatActivity() {
         binding.edtPass.addTextChangedListener(textWatcher)
         binding.edtConPass.addTextChangedListener(textWatcher)
     }
+
 
     private fun validateAndUpdateUI(name: String, email: String, pass: String, conPass: String) {
         val isValid = email.isNotEmpty() && pass.isNotEmpty() && conPass.isNotEmpty() && name.isNotEmpty()
@@ -145,6 +148,7 @@ class SignupActivity : AppCompatActivity() {
 
         return isValid
     }
+
 
 
     private fun requestUserLocation() {

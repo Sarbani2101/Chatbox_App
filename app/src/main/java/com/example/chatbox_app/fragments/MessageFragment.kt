@@ -309,6 +309,7 @@ class MessageFragment : Fragment() {
                     checkDataLoadingComplete()
                 }
             })
+
     }
 
     private fun checkDataLoadingComplete() {
