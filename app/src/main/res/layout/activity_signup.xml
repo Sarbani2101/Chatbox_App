@@ -21,7 +21,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/txtDes"
@@ -36,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtName"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,9 +52,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Username"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:fontFamily="@font/circular_font"
-            android:textColor="@color/cyan"/>
+            android:textColor="@color/cyan"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/edtName"
@@ -61,15 +63,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
-            android:hint="Name" />
+            android:hint="Name"
+            tools:ignore="Autofill,HardcodedText,TextFields" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Location"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:fontFamily="@font/circular_font"
-            android:textColor="@color/cyan"/>
+            android:textColor="@color/cyan"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/edtLoc"
@@ -77,16 +81,18 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
-            android:hint="Location" />
+            android:hint="Location"
+            tools:ignore="Autofill,HardcodedText,TextFields" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Email"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/circular_font"
-            android:textColor="@color/cyan"/>
+            android:textColor="@color/cyan"
+            tools:ignore="HardcodedText" />
 
 
         <EditText
@@ -96,7 +102,8 @@
             android:layout_marginTop="10dp"
             android:textColor="@color/black"
             android:inputType="textEmailAddress"
-            android:hint="Email" />
+            android:hint="Email"
+            tools:ignore="Autofill,HardcodedText" />
         <TextView
             android:id="@+id/errorTextEmail"
             android:layout_width="match_parent"
@@ -110,10 +117,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Password"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/circular_font"
-            android:textColor="@color/cyan"/>
+            android:textColor="@color/cyan"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/edtPass"
@@ -122,16 +130,18 @@
             android:hint="Password"
             android:textColor="@color/black"
             android:layout_marginTop="10dp"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            tools:ignore="Autofill,HardcodedText" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Confirm Password"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/circular_font"
-            android:textColor="@color/cyan"/>
+            android:textColor="@color/cyan"
+            tools:ignore="HardcodedText" />
 
         <EditText
             android:id="@+id/edtConPass"
@@ -140,7 +150,8 @@
             android:hint="Password"
             android:textColor="@color/black"
             android:layout_marginTop="10dp"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            tools:ignore="Autofill,HardcodedText" />
         <TextView
             android:id="@+id/errorPassText"
             android:layout_width="match_parent"
@@ -160,7 +171,8 @@
         android:background="@drawable/log_border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/txtCreate"
@@ -169,9 +181,10 @@
         android:layout_marginTop="672dp"
         android:fontFamily="@font/caros_font"
         android:text="Create an account"
-        android:textSize="16dp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
