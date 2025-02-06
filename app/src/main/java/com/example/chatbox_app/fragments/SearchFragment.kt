@@ -1,5 +1,6 @@
 package com.example.chatbox_app.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -43,6 +44,7 @@ class SearchFragment : Fragment() {
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty()) {
                     // Show the search icon
@@ -75,8 +77,8 @@ class SearchFragment : Fragment() {
                 for (chatSnapshot in snapshot.children) {
                     val chatId = chatSnapshot.key ?: continue
                     val lastMessage = chatSnapshot.child("lastMessage").getValue(String::class.java) ?: ""
-                    val senderId = chatSnapshot.child("senderId").getValue(String::class.java) ?: ""
-                    val receiverId = chatSnapshot.child("receiverId").getValue(String::class.java) ?: ""
+                    chatSnapshot.child("senderId").getValue(String::class.java) ?: ""
+                    chatSnapshot.child("receiverId").getValue(String::class.java) ?: ""
                     val username = chatSnapshot.child("username").getValue(String::class.java) ?: ""
 
                     // Filter based on username or message
