@@ -1,7 +1,6 @@
 package com.example.chatbox_app.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -19,16 +18,16 @@ import com.google.firebase.database.FirebaseDatabase
 import android.graphics.Color  // Corrected Import
 import android.location.Address
 import android.location.Geocoder
-import com.example.chat_application.dataclass.User
 import com.example.chatbox_app.MainActivity
 import com.example.chatbox_app.R
 import com.example.chatbox_app.databinding.ActivitySignupBinding
+import com.example.chatbox_app.dataclass.User
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.io.IOException
 import java.util.Locale
 
-@Suppress("DEPRECATION")
+
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var auth: FirebaseAuth
@@ -108,28 +107,45 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun validateInputs(name: String, email: String, pass: String, conPass: String): Boolean {
-        if (name.isEmpty()) {
-            binding.edtName.error = "Name is required"
-            return false
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        var isValid = true
+
+        // Email validation
+        if (email.isEmpty()) {
+            binding.errorTextEmail.text = "Email is required"
+            isValid = false
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             binding.errorTextEmail.text = "Invalid email address"
-            return false
-        }
-        if (pass.length < 6) {
-            binding.edtPass.error = "Password must be at least 6 characters"
-            return false
-        }
-        if (pass != conPass) {
-            binding.errorPassText.text = "Passwords do not match"
-            return false
+            isValid = false
         } else {
-            binding.errorPassText.text = ""
+            binding.errorTextEmail.text = "" // Clear error message if valid
         }
-        return true
+
+        // Password validation
+        if (pass.isEmpty()) {
+            binding.errorPassText.text = "Password is required"
+            isValid = false
+        } else if (pass.length < 6) {
+            binding.errorPassText.text = "Password must be at least 6 characters"
+            isValid = false
+        } else {
+            binding.errorPassText.text = "" // Clear error message if valid
+        }
+
+        // Confirm password validation
+        if (conPass.isEmpty()) {
+            binding.errorPassText.text = "Confirm password is required"
+            isValid = false
+        } else if (pass != conPass) {
+            binding.errorPassText.text = "Passwords do not match"
+            isValid = false
+        } else {
+            binding.errorPassText.text = "" // Clear error message if valid
+        }
+
+        return isValid
     }
+
 
     private fun requestUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -147,8 +163,24 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("MissingPermission", "SetTextI18n")
     private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 currentLat = location.latitude
@@ -162,7 +194,6 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun convertLatLngToAddress(latitude: Double, longitude: Double) {
         val geocoder = Geocoder(this, Locale.getDefault())
         Thread {

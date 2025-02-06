@@ -1,3 +1,5 @@
+package com.example.chatbox_app.dataclass
+
 data class Chat(
     val senderId: String = "",
     val receiverUid: String = "",
@@ -5,5 +7,6 @@ data class Chat(
     val receiverName: String = "",
     var lastMessage: String = "",
     var timestamp: Long = 0L,
-    val profileImageUrl: String = ""
+    val profileImageUrl: String = "",
+    var isRead: Boolean = false
 )

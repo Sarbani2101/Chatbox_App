@@ -11,8 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.chat_application.dataclass.User
 import com.example.chatbox_app.R
+import com.example.chatbox_app.dataclass.User
 
 class CallsAdapter(private val context: Context, private val userList: List<User>) :
     RecyclerView.Adapter<CallsAdapter.ViewHolder>() {

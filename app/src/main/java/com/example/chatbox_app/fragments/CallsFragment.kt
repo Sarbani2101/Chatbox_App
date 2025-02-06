@@ -10,9 +10,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chat_application.dataclass.User
 import com.example.chatbox_app.R
 import com.example.chatbox_app.adapters.CallsAdapter
+import com.example.chatbox_app.dataclass.User
 import com.google.firebase.database.*
 
 class CallsFragment : Fragment() {

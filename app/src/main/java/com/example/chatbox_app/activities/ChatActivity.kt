@@ -1,6 +1,7 @@
 package com.example.chatbox_app.activities
 
-import Chat
+
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatbox_app.adapter.ChatAdapter
 import com.example.chatbox_app.databinding.ActivityChatBinding
+import com.example.chatbox_app.dataclass.Chat
 import com.example.chatbox_app.dataclass.Message
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -19,6 +21,7 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatBinding
     private lateinit var database: DatabaseReference
+    private lateinit var mAuth: FirebaseAuth
     private lateinit var chatAdapter: ChatAdapter
     private val messages = mutableListOf<Message>()
 
@@ -34,11 +37,10 @@ class ChatActivity : AppCompatActivity() {
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mDbRef = FirebaseDatabase.getInstance().getReference("user")
-
-        // Initialize Firebase references
+        mAuth = FirebaseAuth.getInstance()
+        mDbRef = FirebaseDatabase.getInstance().getReference("users") // Updated to 'users'
         database = FirebaseDatabase.getInstance().reference
-        currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+        currentUserId = mAuth.currentUser?.uid
         selectedUserId = intent.getStringExtra("selected_user_id")
         receiverName = intent.getStringExtra("selected_user_name")
 
@@ -124,7 +126,6 @@ class ChatActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Toggle visibility of sendButton and microImg based on input
                 if (s.isNullOrBlank()) {
                     binding.sendButton.visibility = View.GONE
                     binding.microImg.visibility = View.VISIBLE
@@ -139,47 +140,44 @@ class ChatActivity : AppCompatActivity() {
     }
 
     // Chat Activity - Sending the message and updating chat list
-    private fun sendMessage(messageText: String) {
-        if (chatId == null || currentUserId == null) return
+    private fun sendMessage(message: String) {
+        val currentUserId = mAuth.currentUser?.uid ?: return
+        val selectedUserId = intent.getStringExtra("selected_user_id") ?: return
+        val selectedUserName = intent.getStringExtra("selected_user_name") ?: return
 
-        // Create message object
-        val message = Message(
-            senderId = currentUserId!!,
-            message = messageText,
+        // Create a Message object
+        val chatMessage = Message(
+            senderId = currentUserId,
+            receiverId = selectedUserId,
+            message = message,
             timestamp = System.currentTimeMillis().toString()
         )
 
-        val messageId = database.child("chats").child(chatId!!).push().key
-        if (messageId != null) {
-            // Save the message in Firebase Database
-            database.child("chats").child(chatId!!).child(messageId).setValue(message)
-                .addOnSuccessListener {
-                    // Clear the message input field after sending the message
-                    binding.messageEditText.text.clear()
+        // Save the chat message to Firebase under the chat ID
+        database.child("chats").child(chatId!!).push().setValue(chatMessage)
+        database.child("chats").child(generateChatId()!!).push().setValue(chatMessage)
 
-                    // Send back the last message and timestamp to update the chat list
-                    sendBackChatDataToMainActivity(message.message, message.timestamp)
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, "Failed to send message.", Toast.LENGTH_SHORT).show()
-                }
-        }
-    }
-
-    private fun updateChatList(message: String, timestamp: Long) {
-        // Create chat object for updating the chat list
-        val chat = Chat(
-            receiverName = receiverName ?: "Unknown User",
-            receiverUid = selectedUserId ?: "",
+        // Save chat summary (last message and timestamp)
+        val chatSummary = Chat(
+            receiverName = selectedUserName,
+            receiverUid = selectedUserId,
             lastMessage = message,
-            timestamp = timestamp
+            timestamp = System.currentTimeMillis(),
+            isRead = false
         )
 
-        // Add or update chat in sender's chat list
-        mDbRef.child("chats").child(currentUserId ?: "").child(selectedUserId ?: "").setValue(chat)
+        mDbRef.child("chats").child(currentUserId).child(selectedUserId).setValue(chatSummary)
+        mDbRef.child("chats").child(selectedUserId).child(currentUserId).setValue(chatSummary)
 
-        // Add or update chat in receiver's chat list
-        mDbRef.child("chats").child(selectedUserId ?: "").child(currentUserId ?: "").setValue(chat)
+        // Return to MessageFragment with the new message
+        val resultIntent = Intent().apply {
+            putExtra("last_message", message)
+            putExtra("timestamp", System.currentTimeMillis())
+            putExtra("receiver_uid", selectedUserId)
+            putExtra("name", selectedUserName)
+        }
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish() // Finish the ChatActivity after sending the message
     }
 
     // Send back chat data (last message, timestamp) to the previous activity
@@ -192,3 +190,4 @@ class ChatActivity : AppCompatActivity() {
         setResult(RESULT_OK, resultIntent)
     }
 }
+

@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.chat_application.dataclass.User
 import com.example.chatbox_app.adapter.ContactsAdapter
 import com.example.chatbox_app.databinding.FragmentContactsBinding
 import com.example.chatbox_app.dataclass.Contact
+import com.example.chatbox_app.dataclass.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
@@ -32,7 +32,7 @@ class ContactsFragment : Fragment() {
 
         // Initialize Firebase Auth and Database Reference
         auth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance().getReference("user") // Ensure this matches your Firebase database structure
+        database = FirebaseDatabase.getInstance().getReference("users") // Ensure this matches your Firebase database structure
 
         // Setup RecyclerView
         binding.contactRecyclerview.layoutManager = LinearLayoutManager(requireContext())
@@ -51,24 +51,31 @@ class ContactsFragment : Fragment() {
     private fun fetchContacts() {
         val currentUserId = auth.currentUser?.uid ?: return
 
-        database.addValueEventListener(object : ValueEventListener {
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 contactList.clear()
-                for (userSnapshot in snapshot.children) {
-                    val user = userSnapshot.getValue(User::class.java)
-                    if (user != null && user.uid != currentUserId) { // Exclude current user
-                        val contact = Contact(
-                            name = user.name,
-                            status = "Available", // Example status (can be dynamic)
-                            profileImage = user.profileImage
-                        )
-                        contactList.add(contact)
+                if (snapshot.exists()) {
+                    for (userSnapshot in snapshot.children) {
+                        val user = userSnapshot.getValue(User::class.java)
+                        if (user != null && user.uid != currentUserId) { // Exclude current user
+                            val contact = Contact(
+                                name = user.name ?: "Unknown",
+                                status = "Available", // Example status (can be dynamic)
+                                profileImage = user.profileImage ?: "" // Handle null case
+                            )
+                            contactList.add(contact)
+                        }
                     }
+                    if (contactList.isEmpty()) {
+                        Log.d("ContactsFragment", "No contacts found.")
+                    }
+                    // Sort contacts alphabetically by name
+                    contactList.sortBy { it.name }
+                    // Notify the adapter to update RecyclerView
+                    contactsAdapter.notifyDataSetChanged()
+                } else {
+                    Log.d("ContactsFragment", "No users found in the database.")
                 }
-                // Sort contacts alphabetically by name
-                contactList.sortBy { it.name }
-                // Notify the adapter to update the RecyclerView
-                contactsAdapter.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {

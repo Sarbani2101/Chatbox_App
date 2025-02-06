@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chatbox_app.R
 import com.example.chatbox_app.databinding.ChatListBinding
+import com.example.chatbox_app.dataclass.Chat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -31,7 +32,7 @@ class ChatListAdapter(private val chatList: MutableList<Chat>, private val onCha
 
             // Use Glide to load the profile image
             Glide.with(binding.root.context)
-                .load(chat.profileImageUrl)
+                .load(chat.profileImageUrl) // Ensure that profileImageUrl is part of your Chat object.
                 .placeholder(R.drawable.ic_default_profile_image)
                 .into(binding.userProfileImage)
 
