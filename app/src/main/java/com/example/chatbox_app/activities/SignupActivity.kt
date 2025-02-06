@@ -1,44 +1,70 @@
 package com.example.chatbox_app.activities
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import android.graphics.Color  // Corrected Import
+import android.location.Address
+import android.location.Geocoder
 import com.example.chat_application.dataclass.User
 import com.example.chatbox_app.MainActivity
 import com.example.chatbox_app.R
 import com.example.chatbox_app.databinding.ActivitySignupBinding
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import java.io.IOException
+import java.util.Locale
 
 class SignupActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivitySignupBinding
-    private lateinit var mAuth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private var currentLat: Double? = null
+    private var currentLng: Double? = null
+    private var userAddress: String? = null // Stores converted address
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mAuth = FirebaseAuth.getInstance()
+        // Initialize Firebase authentication & database reference
+        auth = FirebaseAuth.getInstance()
+        mDbRef = FirebaseDatabase.getInstance().getReference("users")
 
+        // Initialize location provider
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // Add text watchers to validate input fields
         addTextWatchers()
 
+        // Request location when activity starts
+        requestUserLocation()
+
+        // Sign-up button click listener
         binding.txtCreate.setOnClickListener {
             val name = binding.edtName.text.toString().trim()
             val email = binding.edtEmail.text.toString().trim()
-            val password = binding.edtPass.text.toString().trim()
-            val confirmPassword = binding.edtConPass.text.toString().trim()
+            val pass = binding.edtPass.text.toString().trim()
+            val conPass = binding.edtConPass.text.toString().trim()
 
-            if (validateInputs(name, email, password, confirmPassword)) {
-                signUpUser(name,email, password)
+            if (validateInputs(name, email, pass, conPass)) {
+                signUpUser(name, email, pass)
             }
         }
     }
@@ -47,22 +73,20 @@ class SignupActivity : AppCompatActivity() {
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val name = binding.edtName.text.toString().trim()
+                val email = binding.edtEmail.text.toString().trim()
+                val pass = binding.edtPass.text.toString().trim()
+                val conPass = binding.edtConPass.text.toString().trim()
+                validateAndUpdateUI(name, email, pass, conPass)
+            }
 
             override fun afterTextChanged(s: Editable?) {
                 val name = binding.edtName.text.toString().trim()
                 val email = binding.edtEmail.text.toString().trim()
-                val password = binding.edtPass.text.toString().trim()
-                val confirmPassword = binding.edtConPass.text.toString().trim()
-
-                // Check if all inputs are valid
-                if (validateInputs(name, email, password, confirmPassword)) {
-                    binding.txtCreate.setTextColor(Color.WHITE)
-                    binding.logBorder.setBackgroundResource(R.drawable.select_log_border) // Green border
-                } else {
-                    binding.txtCreate.setTextColor(Color.BLACK)
-                    binding.logBorder.setBackgroundResource(R.drawable.log_border) // Default border
-                }
+                val pass = binding.edtPass.text.toString().trim()
+                val conPass = binding.edtConPass.text.toString().trim()
+                binding.txtCreate.isEnabled = validateInputs(name, email, pass, conPass)
             }
         }
 
@@ -72,71 +96,112 @@ class SignupActivity : AppCompatActivity() {
         binding.edtConPass.addTextChangedListener(textWatcher)
     }
 
-    private fun validateInputs(
-        username: String,
-        email: String,
-        password: String,
-        confirmPassword: String
-    ): Boolean {
-        if (username.isEmpty()) {
-            showErrorUnderEditText("Username cannot be empty")
+    private fun validateAndUpdateUI(name: String, email: String, pass: String, conPass: String) {
+        val isValid = email.isNotEmpty() && pass.isNotEmpty() && conPass.isNotEmpty() && name.isNotEmpty()
+        if (isValid) {
+            binding.txtCreate.setTextColor(Color.WHITE)
+            binding.signBorder.setBackgroundResource(R.drawable.select_log_border) // Green border
+        } else {
+            binding.txtCreate.setTextColor(Color.BLACK)
+            binding.signBorder.setBackgroundResource(R.drawable.log_border) // Default border
+        }
+    }
+
+    private fun validateInputs(name: String, email: String, pass: String, conPass: String): Boolean {
+        if (name.isEmpty()) {
+            binding.edtName.error = "Name is required"
             return false
         }
-
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showErrorUnderEditText("Invalid email address", isEmail = true)
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.errorTextEmail.text = "Invalid email address"
             return false
         }
-
-
-        if (confirmPassword.isEmpty() || password != confirmPassword) {
-            showErrorUnderEditText("Passwords do not match")
+        if (pass.length < 6) {
+            binding.edtPass.error = "Password must be at least 6 characters"
             return false
         }
-
-        binding.errorText.text = "" // Clear previous errors
+        if (pass != conPass) {
+            binding.errorPassText.text = "Passwords do not match"
+            return false
+        } else {
+            binding.errorPassText.text = ""
+        }
         return true
     }
 
-
-    private fun showErrorUnderEditText(message: String, isEmail: Boolean = false) {
-        if (isEmail) {
-            binding.errorText.text = message
-            binding.errorText.setTextColor(Color.RED)
+    private fun requestUserLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         } else {
-            binding.errorTextUsername.text = message
-            binding.errorTextUsername.setTextColor(Color.RED)
+            getLastLocation()
         }
     }
 
-
-    private fun signUpUser(name: String, email: String, password: String) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Account created successfully", Toast.LENGTH_SHORT).show()
-
-                    val uid = mAuth.currentUser?.uid!!
-                    addUserToDatabase(name, email, uid)
-
-                    val intent = Intent(this, MainActivity::class.java).apply {
-                        putExtra("user_name", name)
-                        putExtra("uid", uid)
-                    }
-                    startActivity(intent)
-                    finish()
-
-
-                } else {
-                    val errorMessage = task.exception?.localizedMessage ?: "Sign-up failed"
-                    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-                }
-            }
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            getLastLocation()
+        } else {
+            Toast.makeText(this, "Location permission is required for sign-up", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    private fun addUserToDatabase(name: String, email: String, uid: String) {
-        mDbRef = FirebaseDatabase.getInstance().getReference()
-        mDbRef.child("user").child(uid).setValue(User(name, email, uid))
+    @SuppressLint("MissingPermission", "SetTextI18n")
+    private fun getLastLocation() {
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                currentLat = location.latitude
+                currentLng = location.longitude
+                convertLatLngToAddress(currentLat!!, currentLng!!)
+            } else {
+                binding.edtLoc.setText("Location unavailable")
+            }
+        }.addOnFailureListener {
+            binding.edtLoc.setText("Failed to get location")
+        }
+    }
 
+    @SuppressLint("SetTextI18n")
+    private fun convertLatLngToAddress(latitude: Double, longitude: Double) {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        Thread {
+            try {
+                val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1) ?: emptyList()
+                if (addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    val fullAddress = "${address.featureName ?: "Unknown"}, ${address.locality ?: "Unknown City"}, ${address.countryName ?: "Unknown Country"} - ${address.postalCode ?: "No Postal Code"}"
+                    userAddress = fullAddress
+
+                    runOnUiThread {
+                        binding.edtLoc.setText(fullAddress)
+                    }
+                } else {
+                    runOnUiThread {
+                        binding.edtLoc.setText("Address not found")
+                    }
+                }
+            } catch (e: IOException) {
+                runOnUiThread {
+                    binding.edtLoc.setText("Address retrieval failed")
+                }
+            }
+        }.start()
+    }
+
+    private fun signUpUser(name: String, email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val uid = auth.currentUser?.uid!!
+                addUserToDatabase(name, email, uid, currentLat, currentLng, userAddress)
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, task.exception?.localizedMessage ?: "Sign-up failed", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun addUserToDatabase(name: String, email: String, uid: String, lat: Double?, lng: Double?, address: String?) {
+        val user = User(name, "City", "Status", email, uid, lat ?: 0.0, lng ?: 0.0, address ?: "", "")
+        mDbRef.child(uid).setValue(user)
     }
 }
