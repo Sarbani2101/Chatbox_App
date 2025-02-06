@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_message" />
 
     <fragment
+        android:id="@+id/friendListFragment"
+        android:name="com.example.chatbox_app.fragments.FriendListFragment"
+        android:label="fragment_friend_list"
+        tools:layout="@layout/fragment_friend_list" />
+
+    <fragment
         android:id="@+id/callsFragment"
         android:name="com.example.chatbox_app.fragments.CallsFragment"
         android:label="Calls"
@@ -28,4 +34,5 @@
         android:name="com.example.chatbox_app.fragments.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
+
 </navigation>

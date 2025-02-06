@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.example.chatbox_app.databinding.ActivityMainBinding
 import com.example.chatbox_app.fragments.CallsFragment
 import com.example.chatbox_app.fragments.ContactsFragment
+import com.example.chatbox_app.fragments.FriendListFragment
 import com.example.chatbox_app.fragments.MessageFragment
 import com.example.chatbox_app.fragments.SettingsFragment
 
@@ -28,6 +29,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             val fragment: Fragment = when (menuItem.itemId) {
                 R.id.nav_message -> MessageFragment()
+                R.id.nav_friend_list -> FriendListFragment()
                 R.id.nav_calls -> CallsFragment()
                 R.id.nav_contacts -> ContactsFragment()
                 R.id.nav_settings -> SettingsFragment()

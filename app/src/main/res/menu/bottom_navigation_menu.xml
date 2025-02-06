@@ -3,6 +3,11 @@
         android:id="@+id/nav_message"
         android:icon="@drawable/ic_message"
         android:title="Message" />
+
+    <item
+        android:id="@+id/nav_friend_list"
+        android:icon="@drawable/ic_friend_list"
+        android:title="Friend List" />
     <item
         android:id="@+id/nav_calls"
         android:icon="@drawable/ic_calls"
