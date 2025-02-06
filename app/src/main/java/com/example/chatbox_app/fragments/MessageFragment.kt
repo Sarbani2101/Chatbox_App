@@ -1,6 +1,7 @@
 package com.example.chatbox_app.fragments
 
 import ChatListAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
@@ -26,6 +27,7 @@ import com.example.chatbox_app.dataclass.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
+@Suppress("DEPRECATION")
 class MessageFragment : Fragment() {
 
     private var _binding: FragmentMessageBinding? = null
@@ -68,11 +70,11 @@ class MessageFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        val currentUserName = mAuth.currentUser?.displayName ?: "Guest"
-        val currentUserId = mAuth.currentUser?.uid ?: ""
+        mAuth.currentUser?.displayName ?: "Guest"
+        mAuth.currentUser?.uid ?: ""
 
         storiesAdapter = StoriesAdapter(userList) { selectedUser ->
-            navigateToChatActivity(currentUserName, currentUserId, selectedUser.uid, selectedUser.name)
+            navigateToChatActivity(selectedUser.uid, selectedUser.name)
         }
         binding.storiesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.storiesRecyclerView.adapter = storiesAdapter
@@ -84,7 +86,10 @@ class MessageFragment : Fragment() {
         binding.chatListRecyclerView.adapter = chatListAdapter
     }
 
-    private fun navigateToChatActivity(currentUserName: String, currentUserId: String, selectedUserId: String, selectedUserName: String) {
+    private fun navigateToChatActivity(
+        selectedUserId: String,
+        selectedUserName: String
+    ) {
         val intent = Intent(requireContext(), ChatActivity::class.java).apply {
             putExtra("user_name", mAuth.currentUser?.displayName)
             putExtra("uid", mAuth.currentUser?.uid)
@@ -104,6 +109,7 @@ class MessageFragment : Fragment() {
         startActivityForResult(intent, CHAT_ACTIVITY_REQUEST_CODE)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -118,6 +124,7 @@ class MessageFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateChatList(receiverUid: String, name: String, lastMessage: String, timestamp: Long) {
         val chat = Chat(receiverName = name, receiverUid = receiverUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
 
@@ -257,6 +264,7 @@ class MessageFragment : Fragment() {
 
     private fun fetchUsersFromDatabase() {
         mDbRef.child("users").addListenerForSingleValueEvent(object : ValueEventListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 userList.clear()
                 val currentUser = mAuth.currentUser ?: return
@@ -289,6 +297,7 @@ class MessageFragment : Fragment() {
     private fun fetchChatsFromDatabase(userId: String) {
         mDbRef.child("chats").child(userId).orderByChild("timestamp")
             .addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     chatList.clear()
                     for (data in snapshot.children) {
