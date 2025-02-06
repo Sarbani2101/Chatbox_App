@@ -84,7 +84,7 @@ class SignupActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                val name = binding.edtName.text.toString().trim()
+                binding.edtName.text.toString().trim()
                 val email = binding.edtEmail.text.toString().trim()
                 val pass = binding.edtPass.text.toString().trim()
                 val conPass = binding.edtConPass.text.toString().trim()
@@ -169,6 +169,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
