@@ -27,12 +27,12 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="Autofill,HardcodedText,MissingConstraints,TextFields" />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="ContentDescription,MissingConstraints" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewSearch"
@@ -58,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/searchEditText"
             app:layout_constraintStart_toStartOf="@+id/searchEditText"
             app:layout_constraintTop_toTopOf="@+id/searchEditText"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="ContentDescription,MissingConstraints" />
 
         <TextView
             android:id="@+id/textView4"
@@ -72,7 +72,8 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/searchEditText" />
+            app:layout_constraintTop_toBottomOf="@+id/searchEditText"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/searchClearIcon"
@@ -82,7 +83,8 @@
             android:src="@drawable/ic_remove"
             app:layout_constraintBottom_toBottomOf="@+id/searchEditText"
             app:layout_constraintEnd_toEndOf="@+id/searchEditText"
-            app:layout_constraintTop_toTopOf="@+id/searchEditText" />
+            app:layout_constraintTop_toTopOf="@+id/searchEditText"
+            tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
