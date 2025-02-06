@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.chatbox_app.R
 import com.example.chatbox_app.adapter.SearchAdapter
 import com.example.chatbox_app.databinding.FragmentSearchBinding
 import com.example.chatbox_app.dataclass.ChatItem
@@ -72,6 +71,7 @@ class SearchFragment : Fragment() {
     // Method to search chats based on query
     private fun searchChats(query: String) {
         database.addListenerForSingleValueEvent(object : ValueEventListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 searchResults.clear()
                 for (chatSnapshot in snapshot.children) {

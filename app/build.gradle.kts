@@ -39,6 +39,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        //noinspection DataBindingWithoutKapt
         dataBinding = true
     }
 
@@ -56,20 +57,31 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    //noinspection UseTomlInstead,GradleDependency
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
+    //noinspection UseTomlInstead
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
+    //noinspection UseTomlInstead
     implementation ("com.google.firebase:firebase-auth:23.1.0")
+    //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-auth-ktx")
+    //noinspection UseTomlInstead
     implementation ("com.google.firebase:firebase-database:21.0.0")
+    //noinspection UseTomlInstead
     implementation ("com.github.bumptech.glide:glide:4.15.1")
+    //noinspection UseTomlInstead
     implementation ("com.google.firebase:firebase-firestore:25.1.1")
+    //noinspection UseTomlInstead
     implementation ("com.google.firebase:firebase-storage:21.0.1")
+    //noinspection UseTomlInstead
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 
     val nav_version = "2.8.5"
 
     // Views/Fragments integration
+    //noinspection KtxExtensionAvailable,UseTomlInstead,GradleDependency
     implementation("androidx.navigation:navigation-fragment:$nav_version")
+    //noinspection GradleDependency,UseTomlInstead,KtxExtensionAvailable
     implementation("androidx.navigation:navigation-ui:$nav_version")
 }
