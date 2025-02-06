@@ -1,6 +1,7 @@
 package com.example.chatbox_app.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
@@ -63,7 +64,7 @@ class SignupActivity : AppCompatActivity() {
             val pass = binding.edtPass.text.toString().trim()
             val conPass = binding.edtConPass.text.toString().trim()
 
-            if (validateInputs(name, email, pass, conPass)) {
+            if (email.validateInputs(pass, conPass)) {
                 signUpUser(name, email, pass)
             }
         }
@@ -88,7 +89,7 @@ class SignupActivity : AppCompatActivity() {
                 val pass = binding.edtPass.text.toString().trim()
                 val conPass = binding.edtConPass.text.toString().trim()
 
-                binding.txtCreate.isEnabled = validateInputs(name, email, pass, conPass)
+                binding.txtCreate.isEnabled = email.validateInputs(pass, conPass)
             }
         }
 
@@ -110,14 +111,15 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun validateInputs(name: String, email: String, pass: String, conPass: String): Boolean {
+    @SuppressLint("SetTextI18n")
+    private fun String.validateInputs(pass: String, conPass: String): Boolean {
         var isValid = true
 
         // Email validation
-        if (email.isEmpty()) {
+        if (isEmpty()) {
             binding.errorTextEmail.text = "Email is required"
             isValid = false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(this).matches()) {
             binding.errorTextEmail.text = "Invalid email address"
             isValid = false
         } else {
