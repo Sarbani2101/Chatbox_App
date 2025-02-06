@@ -1,6 +1,7 @@
 package com.example.chatbox_app.activities
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -32,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
     private var chatId: String? = null
     private var receiverName: String? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
