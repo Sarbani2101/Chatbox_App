@@ -75,8 +75,8 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- Main Content -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -93,7 +93,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/storiesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="140dp"
             android:layout_marginTop="8dp"
             android:clipToPadding="false"
             android:paddingStart="8dp"
@@ -104,26 +104,48 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/story_list" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="120dp"
-            app:layout_constraintEnd_toEndOf="@+id/chatListRecyclerView"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="@+id/chatListRecyclerView"
-            app:layout_constraintTop_toTopOf="@+id/storiesRecyclerView" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/chatListRecyclerView"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@drawable/recyclerview_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/storiesRecyclerView"
-            tools:listitem="@layout/chat_list" />
+            app:layout_constraintTop_toBottomOf="@id/storiesRecyclerView">
+
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/storiesRecyclerView" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chatListRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/storiesRecyclerView"
+               />
+
+            <TextView
+                android:id="@+id/txtNomsg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:fontFamily="@font/caros_font"
+                android:text="No List Show"
+                android:textAlignment="center" />
+
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

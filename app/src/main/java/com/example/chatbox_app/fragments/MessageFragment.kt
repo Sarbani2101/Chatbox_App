@@ -81,6 +81,7 @@ class MessageFragment : Fragment() {
 
         chatListAdapter = ChatListAdapter(chatList) { selectedChat ->
             navigateToChatActivity(selectedChat)
+            binding.txtNomsg.visibility = View.VISIBLE
         }
         binding.chatListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.chatListRecyclerView.adapter = chatListAdapter
@@ -97,6 +98,7 @@ class MessageFragment : Fragment() {
             putExtra("selected_user_name", selectedUserName)
         }
         startActivityForResult(intent, CHAT_ACTIVITY_REQUEST_CODE)
+
     }
 
     private fun navigateToChatActivity(selectedChat: Chat) {
@@ -121,6 +123,10 @@ class MessageFragment : Fragment() {
 
             // Update the chat list with the new message
             updateChatList(receiverUid, name, lastMessage, timestamp)
+            binding.txtNomsg.visibility = View.GONE
+        }
+        else{
+            binding.txtNomsg.visibility = View.VISIBLE
         }
     }
 

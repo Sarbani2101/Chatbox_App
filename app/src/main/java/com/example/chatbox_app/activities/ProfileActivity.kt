@@ -1,11 +1,13 @@
 package com.example.chatbox_app.activities
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Base64
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -19,7 +21,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
-
+    private lateinit var imgEdit : ImageView
     private lateinit var locationText: TextView
     private lateinit var nameText: TextView
     private lateinit var nameTextView: TextView
@@ -47,7 +49,8 @@ class ProfileActivity : AppCompatActivity() {
         profileImageView = findViewById(R.id.userProfile)
         backButton = findViewById(R.id.backBtn)
         locationText = findViewById(R.id.locAddress)
-        progressBar = findViewById(R.id.progressBar)
+        progressBar = findViewById(R.id.profileProgress)
+        imgEdit = findViewById(R.id.imgEdit)
 
         // Load user profile from Firebase
         loadUserProfile()
@@ -57,11 +60,53 @@ class ProfileActivity : AppCompatActivity() {
             openImagePicker()
         }
 
+        imgEdit.setOnClickListener {
+            showEditNameDialog()
+        }
+
         // Back button functionality
         backButton.setOnClickListener {
             finish()
         }
     }
+
+    private fun showEditNameDialog() {
+        val currentUser = auth.currentUser
+        if (currentUser == null) return
+
+        val userId = currentUser.uid
+
+        val editText = EditText(this)
+        editText.hint = "Enter new name"
+
+        AlertDialog.Builder(this)
+            .setTitle("Edit Name")
+            .setView(editText)
+            .setPositiveButton("Save") { _, _ ->
+                val newName = editText.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    updateUserName(userId, newName)
+                } else {
+                    Toast.makeText(this, "Name cannot be empty", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun updateUserName(userId: String, newName: String) {
+        database.child(userId).child("name").setValue(newName)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    nameTextView.text = newName
+                    nameText.text = newName
+                    Toast.makeText(this, "Name updated successfully!", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Failed to update name.", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
 
     private fun openImagePicker() {
         val intent = Intent(Intent.ACTION_PICK)
@@ -113,7 +158,7 @@ class ProfileActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val user = snapshot.getValue(User::class.java)
-
+                        progressBar.visibility = View.GONE
                         if (user != null) {
                             nameTextView.text = user.name.ifEmpty { "N/A" }
                             emailTextView.text = user.email.ifEmpty { "N/A" }
@@ -137,6 +182,7 @@ class ProfileActivity : AppCompatActivity() {
                         }
                     } else {
                         Toast.makeText(this@ProfileActivity, "User data not found.", Toast.LENGTH_SHORT).show()
+                        progressBar.visibility = View.VISIBLE
                     }
                 }
 

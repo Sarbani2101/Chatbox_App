@@ -30,6 +30,14 @@ class LoginActivity : AppCompatActivity() {
         addTextWatchers()
 
         // Login button click listener
+        binding.logBorder.setOnClickListener {
+            val email = binding.edtEmail.text.toString().trim()
+            val password = binding.edtPass.text.toString().trim()
+
+            if (validateInputs(email, password)) {
+                loginUser(email, password)
+            }
+        }
         binding.logTxt.setOnClickListener {
             val email = binding.edtEmail.text.toString().trim()
             val password = binding.edtPass.text.toString().trim()
@@ -88,8 +96,14 @@ class LoginActivity : AppCompatActivity() {
     // Login user with Firebase Authentication
     // LoginActivity
     private fun loginUser(email: String, password: String) {
+        binding.logBorder.isEnabled = false
+        binding.logProgress.visibility = android.view.View.VISIBLE
+
         mAuth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
+                binding.logProgress.visibility = android.view.View.GONE
+                binding.logBorder.isEnabled = true
+
                 if (task.isSuccessful) {
                     // Get current user's display name and uid
                     val currentUser = mAuth.currentUser

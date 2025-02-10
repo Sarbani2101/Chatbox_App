@@ -19,6 +19,10 @@ import com.google.firebase.database.FirebaseDatabase
 import android.graphics.Color  // Corrected Import
 import android.location.Address
 import android.location.Geocoder
+import android.media.audiofx.BassBoost
+import android.net.Uri
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.example.chatbox_app.MainActivity
 import com.example.chatbox_app.R
 import com.example.chatbox_app.databinding.ActivitySignupBinding
@@ -27,9 +31,9 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.io.IOException
 import java.util.Locale
+import java.util.regex.Pattern
 
 
-@Suppress("DEPRECATION")
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var auth: FirebaseAuth
@@ -38,7 +42,7 @@ class SignupActivity : AppCompatActivity() {
 
     private var currentLat: Double? = null
     private var currentLng: Double? = null
-    private var userAddress: String? = null // Stores converted address
+    private var userAddress: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,19 +59,22 @@ class SignupActivity : AppCompatActivity() {
         // Add text watchers to validate input fields
         addTextWatchers()
 
-        // Request location when activity starts
+        // Request location permission
         requestUserLocation()
 
-        // Sign-up button click listener
-        binding.txtCreate.setOnClickListener {
-            val name = binding.edtName.text.toString().trim()
-            val email = binding.edtEmail.text.toString().trim()
-            val pass = binding.edtPass.text.toString().trim()
-            val conPass = binding.edtConPass.text.toString().trim()
+        // Sign-up button click listeners
+        binding.signBorder.setOnClickListener { handleSignup() }
+        binding.txtCreate.setOnClickListener { handleSignup() }
+    }
 
-            if (email.validateInputs(pass, conPass)) {
-                signUpUser(name, email, pass)
-            }
+    private fun handleSignup() {
+        val name = binding.edtName.text.toString().trim()
+        val email = binding.edtEmail.text.toString().trim()
+        val pass = binding.edtPass.text.toString().trim()
+        val conPass = binding.edtConPass.text.toString().trim()
+
+        if (email.validateInputs(pass, conPass)) {
+            signUpUser(name, email, pass)
         }
     }
 
@@ -76,21 +83,11 @@ class SignupActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val name = binding.edtName.text.toString().trim()
-                val email = binding.edtEmail.text.toString().trim()
-                val pass = binding.edtPass.text.toString().trim()
-                val conPass = binding.edtConPass.text.toString().trim()
-
-                validateAndUpdateUI(name, email, pass, conPass)
+                validateAndUpdateUI()
             }
 
             override fun afterTextChanged(s: Editable?) {
-                binding.edtName.text.toString().trim()
-                val email = binding.edtEmail.text.toString().trim()
-                val pass = binding.edtPass.text.toString().trim()
-                val conPass = binding.edtConPass.text.toString().trim()
-
-                binding.txtCreate.isEnabled = email.validateInputs(pass, conPass)
+                validateAndUpdateUI()
             }
         }
 
@@ -100,59 +97,63 @@ class SignupActivity : AppCompatActivity() {
         binding.edtConPass.addTextChangedListener(textWatcher)
     }
 
+    private fun validateAndUpdateUI() {
+        val name = binding.edtName.text.toString().trim()
+        val email = binding.edtEmail.text.toString().trim()
+        val pass = binding.edtPass.text.toString().trim()
+        val conPass = binding.edtConPass.text.toString().trim()
 
-    private fun validateAndUpdateUI(name: String, email: String, pass: String, conPass: String) {
-        val isValid = email.isNotEmpty() && pass.isNotEmpty() && conPass.isNotEmpty() && name.isNotEmpty()
-        if (isValid) {
-            binding.txtCreate.setTextColor(Color.WHITE)
-            binding.signBorder.setBackgroundResource(R.drawable.select_log_border) // Green border
-        } else {
-            binding.txtCreate.setTextColor(Color.BLACK)
-            binding.signBorder.setBackgroundResource(R.drawable.log_border) // Default border
-        }
+        val isValid = name.isNotEmpty() && email.isNotEmpty() && pass.isNotEmpty() && conPass.isNotEmpty()
+        binding.txtCreate.setTextColor(if (isValid) android.graphics.Color.WHITE else android.graphics.Color.BLACK)
+        binding.signBorder.setBackgroundResource(if (isValid) R.drawable.select_log_border else R.drawable.log_border)
     }
 
-    @SuppressLint("SetTextI18n")
+    private fun String.isValidPassword(): Boolean {
+        val passwordPattern = "^.{6,}\$"
+        return Pattern.compile(passwordPattern).matcher(this).matches()
+    }
+
     private fun String.validateInputs(pass: String, conPass: String): Boolean {
         var isValid = true
 
         // Email validation
-        if (isEmpty()) {
-            binding.errorTextEmail.text = "Email is required"
-            isValid = false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(this).matches()) {
-            binding.errorTextEmail.text = "Invalid email address"
-            isValid = false
-        } else {
-            binding.errorTextEmail.text = "" // Clear error message if valid
+        binding.errorTextEmail.text = when {
+            isEmpty() -> {
+                isValid = false
+                "Email is required"
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(this).matches() -> {
+                isValid = false
+                "Invalid email address"
+            }
+            else -> ""
         }
 
         // Password validation
-        if (pass.isEmpty()) {
-            binding.errorPassText.text = "Password is required"
-            isValid = false
-        } else if (pass.length < 6) {
-            binding.errorPassText.text = "Password must be at least 6 characters"
-            isValid = false
-        } else {
-            binding.errorPassText.text = "" // Clear error message if valid
+        binding.errorPassText.text = when {
+            pass.isEmpty() -> {
+                isValid = false
+                "Password is required"
+            }
+            !pass.isValidPassword() -> {
+                isValid = false
+                "Password must have at least 6 characters"
+            }
+
+            else -> ""
         }
 
-        // Confirm password validation
-        if (conPass.isEmpty()) {
-            binding.errorPassText.text = "Confirm password is required"
-            isValid = false
-        } else if (pass != conPass) {
-            binding.errorPassText.text = "Passwords do not match"
-            isValid = false
-        } else {
-            binding.errorPassText.text = "" // Clear error message if valid
+        binding.errorConPassText.text = when{
+            pass != conPass -> {
+                isValid = false
+                "Passwords do not match"
+            }
+
+            else -> ""
         }
 
         return isValid
     }
-
-
 
     private fun requestUserLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -170,7 +171,6 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -180,13 +180,6 @@ class SignupActivity : AppCompatActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return
         }
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -230,7 +223,13 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun signUpUser(name: String, email: String, password: String) {
+        binding.signBorder.isEnabled = false
+        binding.signProgress.visibility = View.VISIBLE  // Show loading
+
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            binding.signProgress.visibility = View.GONE  // Hide loading
+            binding.signBorder.isEnabled = true
+
             if (task.isSuccessful) {
                 val uid = auth.currentUser?.uid!!
                 addUserToDatabase(name, email, uid, currentLat, currentLng, userAddress)
@@ -241,6 +240,7 @@ class SignupActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun addUserToDatabase(name: String, email: String, uid: String, lat: Double?, lng: Double?, address: String?) {
         val user = User(name, "City", "Status", email, uid, lat ?: 0.0, lng ?: 0.0, address ?: "", "")
