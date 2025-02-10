@@ -21,7 +21,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/txtDes"
@@ -36,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtName"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="HardcodedText,MissingConstraints" />
 
 
 
@@ -50,7 +51,8 @@
         app:layout_constraintEnd_toStartOf="@+id/gg_Img"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtDes"
-        app:srcCompat="@drawable/ic_facebook" />
+        app:srcCompat="@drawable/ic_facebook"
+        tools:ignore="ContentDescription" />
 
 
 
@@ -64,7 +66,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/fb_Img"
         app:layout_constraintTop_toBottomOf="@+id/txtDes"
-        app:srcCompat="@drawable/ic_google" />
+        app:srcCompat="@drawable/ic_google"
+        tools:ignore="ContentDescription" />
 
 
     <View
@@ -90,7 +93,8 @@
         android:fontFamily="@font/circular_font"
         app:layout_constraintEnd_toStartOf="@+id/view_02"
         app:layout_constraintStart_toEndOf="@+id/view"
-        app:layout_constraintTop_toBottomOf="@+id/txtDes" />
+        app:layout_constraintTop_toBottomOf="@+id/txtDes"
+        tools:ignore="HardcodedText" />
     <View
         android:id="@+id/view_02"
         android:layout_width="150dp"
@@ -126,7 +130,8 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view" />
+        app:layout_constraintTop_toBottomOf="@+id/view"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edt_Email"
@@ -141,7 +146,8 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/txtEmail"
+        tools:ignore="Autofill,LabelFor" />
 
     <TextView
         android:id="@+id/errorEmail"
@@ -169,7 +175,8 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edt_Email" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_Email"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edt_Pass"
@@ -184,7 +191,8 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        tools:ignore="Autofill,LabelFor" />
 
     <TextView
         android:id="@+id/errorPass"
@@ -207,7 +215,8 @@
         android:background="@drawable/log_border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/logTxt"
@@ -221,7 +230,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/log_Border"
         app:layout_constraintEnd_toEndOf="@+id/log_Border"
         app:layout_constraintStart_toStartOf="@+id/log_Border"
-        app:layout_constraintTop_toTopOf="@+id/log_Border" />
+        app:layout_constraintTop_toTopOf="@+id/log_Border"
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/forgotTxt"
@@ -232,6 +242,7 @@
         android:text="Forgot password?"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/log_Border" />
+        app:layout_constraintTop_toBottomOf="@+id/log_Border"
+        tools:ignore="HardcodedText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

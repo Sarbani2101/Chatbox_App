@@ -52,7 +52,8 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtDes" />
+        app:layout_constraintTop_toBottomOf="@+id/txtDes"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edtName"
@@ -64,7 +65,8 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        tools:ignore="Autofill,HardcodedText,TextFields" />
 
     <TextView
         android:id="@+id/textView6"
@@ -79,7 +81,8 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtName" />
+        app:layout_constraintTop_toBottomOf="@+id/edtName"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edtLoc"
@@ -92,7 +95,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        tools:ignore="Autofill,HardcodedText,TextFields" />
 
     <ProgressBar
         android:id="@+id/signProgress"
@@ -118,7 +122,8 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edtLoc" />
+        app:layout_constraintTop_toBottomOf="@+id/edtLoc"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edtEmail"
@@ -131,7 +136,8 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8"
+        tools:ignore="Autofill,HardcodedText" />
 
     <TextView
         android:id="@+id/errorTextEmail"
@@ -159,7 +165,8 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/errorTextEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/errorTextEmail"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edtPass"
@@ -172,7 +179,8 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView10" />
+        app:layout_constraintTop_toBottomOf="@+id/textView10"
+        tools:ignore="Autofill,HardcodedText" />
 
     <TextView
         android:id="@+id/errorPassText"
@@ -200,7 +208,8 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/errorPassText" />
+        app:layout_constraintTop_toBottomOf="@+id/errorPassText"
+        tools:ignore="HardcodedText" />
 
     <EditText
         android:id="@+id/edtConPass"
