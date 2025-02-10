@@ -142,7 +142,8 @@
                 android:layout_marginTop="0dp"
                 android:fontFamily="@font/caros_font"
                 android:text="No List Show"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
 
