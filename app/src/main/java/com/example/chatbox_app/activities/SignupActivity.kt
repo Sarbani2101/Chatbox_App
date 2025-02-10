@@ -16,13 +16,9 @@ import androidx.core.app.ActivityCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import android.graphics.Color  // Corrected Import
 import android.location.Address
 import android.location.Geocoder
-import android.media.audiofx.BassBoost
-import android.net.Uri
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import com.example.chatbox_app.MainActivity
 import com.example.chatbox_app.R
 import com.example.chatbox_app.databinding.ActivitySignupBinding
@@ -34,6 +30,7 @@ import java.util.Locale
 import java.util.regex.Pattern
 
 
+@Suppress("DEPRECATION")
 class SignupActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignupBinding
     private lateinit var auth: FirebaseAuth
@@ -171,6 +168,7 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 this,
