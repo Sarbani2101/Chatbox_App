@@ -33,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
     private var chatId: String? = null
     private var receiverName: String? = null
 
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

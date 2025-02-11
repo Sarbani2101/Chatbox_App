@@ -1,6 +1,7 @@
 package com.example.chatbox_app
 
 import android.os.Bundle
+import android.os.StrictMode
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.chatbox_app.databinding.ActivityMainBinding
@@ -16,6 +17,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+            .detectAll()
+            .penaltyLog()
+            .build()
+        )
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

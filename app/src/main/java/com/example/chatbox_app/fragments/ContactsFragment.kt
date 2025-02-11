@@ -1,5 +1,6 @@
 package com.example.chatbox_app.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.chatbox_app.activities.ChatActivity
 import com.example.chatbox_app.adapter.ContactsAdapter
 import com.example.chatbox_app.databinding.FragmentContactsBinding
 import com.example.chatbox_app.dataclass.Contact
@@ -37,7 +39,7 @@ class ContactsFragment : Fragment() {
         // Setup RecyclerView
         binding.contactRecyclerview.layoutManager = LinearLayoutManager(requireContext())
         contactsAdapter = ContactsAdapter(contactList) { contact ->
-            // Handle contact click (if needed)
+            // Handle contact click
             onContactClick(contact)
         }
         binding.contactRecyclerview.adapter = contactsAdapter
@@ -51,6 +53,10 @@ class ContactsFragment : Fragment() {
     private fun fetchContacts() {
         val currentUserId = auth.currentUser?.uid ?: return
 
+        // Show progress bar before loading data
+        binding.contactProgress.visibility = View.VISIBLE
+        binding.contactRecyclerview.visibility = View.GONE
+
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 contactList.clear()
@@ -61,25 +67,36 @@ class ContactsFragment : Fragment() {
                             val contact = Contact(
                                 name = user.name ?: "Unknown",
                                 status = "Available", // Example status (can be dynamic)
-                                profileImage = user.profileImage ?: "" // Handle null case
+                                profileImage = user.profileImage ?: "",
+                                uid = user.uid
                             )
                             contactList.add(contact)
                         }
                     }
+                    // Hide progress bar once data is loaded
+                    binding.contactProgress.visibility = View.GONE
+
                     if (contactList.isEmpty()) {
                         Log.d("ContactsFragment", "No contacts found.")
+                        binding.noContactsText.visibility = View.VISIBLE
+                    } else {
+                        binding.contactRecyclerview.visibility = View.VISIBLE
                     }
+
                     // Sort contacts alphabetically by name
                     contactList.sortBy { it.name }
                     // Notify the adapter to update RecyclerView
                     contactsAdapter.notifyDataSetChanged()
                 } else {
                     Log.d("ContactsFragment", "No users found in the database.")
+                    binding.contactProgress.visibility = View.GONE
+                    binding.noContactsText.visibility = View.VISIBLE
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("ContactsFragment", "Error fetching users: ${error.message}")
+                binding.contactProgress.visibility = View.GONE
             }
         })
     }
@@ -87,10 +104,11 @@ class ContactsFragment : Fragment() {
     private fun onContactClick(contact: Contact) {
         // Handle the contact item click (e.g., navigate to ChatActivity)
         Log.d("ContactsFragment", "Clicked on contact: ${contact.name}")
-        // Example: Navigate to ChatActivity
-        // val intent = Intent(requireContext(), ChatActivity::class.java)
-        // intent.putExtra("contact_name", contact.name)
-        // intent.putExtra("contact_image", contact.profileImage)
-        // startActivity(intent)
+//
+//        val intent = Intent(requireContext(), ChatActivity::class.java)
+//        intent.putExtra("contact_name", contact.name)
+//        intent.putExtra("contact_image", contact.profileImage)
+//        intent.putExtra("contact_uid", contact.uid) // Ensure UID is passed for fetching messages
+//        startActivity(intent)
     }
 }

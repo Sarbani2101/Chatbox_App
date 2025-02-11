@@ -45,16 +45,16 @@
                 tools:ignore="HardcodedText" />
 
             <!-- Message Preview -->
-            <TextView
-                android:id="@+id/lastMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is a message preview..."
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp"
-                android:maxLines="1"
-                android:ellipsize="end"
-                tools:ignore="HardcodedText" />
+<!--            <TextView-->
+<!--                android:id="@+id/user_status"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="This is a message preview..."-->
+<!--                android:textColor="@android:color/darker_gray"-->
+<!--                android:textSize="12sp"-->
+<!--                android:maxLines="1"-->
+<!--                android:ellipsize="end"-->
+<!--                tools:ignore="HardcodedText" />-->
 
 
         </LinearLayout>

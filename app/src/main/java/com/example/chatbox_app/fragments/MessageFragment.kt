@@ -87,10 +87,7 @@ class MessageFragment : Fragment() {
         binding.chatListRecyclerView.adapter = chatListAdapter
     }
 
-    private fun navigateToChatActivity(
-        selectedUserId: String,
-        selectedUserName: String
-    ) {
+    private fun navigateToChatActivity(selectedUserId: String, selectedUserName: String) {
         val intent = Intent(requireContext(), ChatActivity::class.java).apply {
             putExtra("user_name", mAuth.currentUser?.displayName)
             putExtra("uid", mAuth.currentUser?.uid)
@@ -131,24 +128,33 @@ class MessageFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun updateChatList(receiverUid: String, name: String, lastMessage: String, timestamp: Long) {
-        val chat = Chat(receiverName = name, receiverUid = receiverUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
+    private fun updateChatList(receiverUid: String, receiverName: String, lastMessage: String, timestamp: Long) {
+        val senderUid = mAuth.currentUser?.uid ?: return
+        val senderName = mAuth.currentUser?.displayName ?: "Unknown"
 
-        // Save or update the chat in Firebase
-        val chatRef = mDbRef.child("chats").child(mAuth.currentUser?.uid ?: "").child(receiverUid)
-        chatRef.setValue(chat)
+        // Create chat objects for both sender and receiver
+        val senderChat = Chat(receiverName = receiverName, receiverUid = receiverUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
+        val receiverChat = Chat(receiverName = senderName, receiverUid = senderUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
 
-        // Update the chatList locally and refresh the adapter
+        // Save or update chat for sender
+        val senderChatRef = mDbRef.child("chats").child(senderUid).child(receiverUid)
+        senderChatRef.setValue(senderChat)
+
+        // Save or update chat for receiver
+        val receiverChatRef = mDbRef.child("chats").child(receiverUid).child(senderUid)
+        receiverChatRef.setValue(receiverChat)
+
+        // Update sender's chat list locally and refresh the adapter
         val existingChatIndex = chatList.indexOfFirst { it.receiverUid == receiverUid }
         if (existingChatIndex != -1) {
-            chatList[existingChatIndex] = chat
+            chatList[existingChatIndex] = senderChat
         } else {
-            chatList.add(0, chat)  // Always add the new message at the top
+            chatList.add(0, senderChat)  // Always add the new message at the top
         }
-        chatList.sortByDescending { it.timestamp }  // Sort chats by timestamp
-        chatListAdapter.notifyDataSetChanged()  // Notify the adapter to refresh the list
-    }
 
+        chatList.sortByDescending { it.timestamp }  // Sort chats by timestamp
+        chatListAdapter.notifyDataSetChanged()  // Refresh UI
+    }
 
     private fun setupClickListeners() {
         binding.profileIcon.setOnClickListener {

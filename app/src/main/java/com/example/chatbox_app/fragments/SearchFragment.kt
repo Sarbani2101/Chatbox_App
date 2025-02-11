@@ -68,24 +68,15 @@ class SearchFragment : Fragment() {
 
     // Search for names and sort alphabetically
     private fun searchChats(query: String) {
-        database.orderByChild("senderName").addListenerForSingleValueEvent(object : ValueEventListener {
+        database.addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 searchResults.clear()
+
                 for (chatSnapshot in snapshot.children) {
-                    val chatId = chatSnapshot.key ?: continue
-                    val lastMessage = chatSnapshot.child("lastMessage").getValue(String::class.java) ?: ""
-                    val senderId = chatSnapshot.child("senderId").getValue(String::class.java) ?: ""
-                    val receiverId = chatSnapshot.child("receiverId").getValue(String::class.java) ?: ""
-                    val senderName = chatSnapshot.child("senderName").getValue(String::class.java) ?: ""
-                    val receiverName = chatSnapshot.child("receiverName").getValue(String::class.java) ?: ""
-
-                    // Show only chats related to the current user
-                    if (currentUserId != senderId && currentUserId != receiverId) continue
-
-                    // Match search query with name
-                    if (senderName.contains(query, true) || receiverName.contains(query, true)) {
-                        searchResults.add(ChatItem(chatId, senderName, lastMessage))
+                    val chatItem = chatSnapshot.getValue(ChatItem::class.java)
+                    if (chatItem != null && chatItem.username.contains(query, ignoreCase = true)) {
+                        searchResults.add(chatItem)
                     }
                 }
 
@@ -100,4 +91,5 @@ class SearchFragment : Fragment() {
             }
         })
     }
+
 }

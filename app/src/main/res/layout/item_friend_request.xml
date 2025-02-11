@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/cyan"
         android:text="Accept"
+        android:layout_marginEnd="4dp"
         tools:ignore="HardcodedText" />
 
     <Button

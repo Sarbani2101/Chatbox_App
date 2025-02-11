@@ -1,5 +1,6 @@
 package com.example.chatbox_app.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -69,14 +70,17 @@ class SettingsFragment : Fragment() {
 
             // Fetch the user data from Firebase
             database.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
+                @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val user = snapshot.getValue(User::class.java) // Retrieve User object
                         if (user != null) {
+                            binding.settingProgress.visibility = View.GONE
                             // Display user name or a default text if null
-                            binding.settingsName.text = user.name ?: "User Name"
+                            binding.settingsName.text = user.name
                         } else {
                             binding.settingsName.text = "User Name Not Found"
+                            binding.settingProgress.visibility = View.VISIBLE
                         }
                     } else {
                         binding.settingsName.text = "User Data Not Found"

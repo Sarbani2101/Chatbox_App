@@ -17,7 +17,6 @@ class SearchAdapter(
 
     class SearchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val username: TextView = view.findViewById(R.id.usernameTextView)
-        val lastMessage: TextView = view.findViewById(R.id.lastMessage)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
@@ -28,7 +27,6 @@ class SearchAdapter(
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val chatItem = chatItemList[position]
         holder.username.text = chatItem.username
-        holder.lastMessage.text = chatItem.lastMessage
 
         // Handle item click
         holder.itemView.setOnClickListener {

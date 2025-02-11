@@ -88,24 +88,60 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/black">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/contactRecyclerview"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="60dp"
+            android:layout_height="570dp"
+            android:layout_marginTop="98dp"
+            android:background="@drawable/recyclerview_bg"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:padding="24dp"
-            tools:listitem="@layout/contacts_list"
-            android:background="@drawable/recyclerview_bg"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <ProgressBar
+                android:id="@+id/contactProgress"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
+            <TextView
+                android:id="@+id/noContactsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="28dp"
+                android:layout_marginEnd="32dp"
+                android:text="Contactlist not display"
+                android:textAlignment="center"
+                android:fontFamily="@font/caros_font"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/contactProgress" />
 
-    </androidx.recyclerview.widget.RecyclerView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/contactRecyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/recyclerview_bg"
+                android:padding="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/noContactsText"
+                app:layout_constraintVertical_bias="1.0"
+                tools:listitem="@layout/contacts_list" />
 
 
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

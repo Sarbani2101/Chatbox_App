@@ -31,7 +31,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="8dp" />
+        android:padding="8dp"
+        tools:ignore="HardcodedText" />
 
 
     <!-- Title -->
@@ -50,7 +51,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/backImg"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.372" />
+            app:layout_constraintVertical_bias="0.372"
+            tools:ignore="HardcodedText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -87,7 +89,8 @@
                     android:src="@drawable/ic_default_profile_image"
                     android:contentDescription="User Profile"
                     android:layout_marginEnd="12dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
@@ -106,7 +109,8 @@
                         android:fontFamily="@font/caros_font"
                         android:textColor="@android:color/black"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Message Preview -->
                     <TextView
@@ -118,16 +122,25 @@
                         android:maxLines="1"
                         android:text="Never give up 💪"
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_qr"
-                    android:layout_margin="16dp"/>
+                    android:layout_margin="16dp"
+                    tools:ignore="ContentDescription" />
 
             </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/settingProgress"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="gone"
+                android:layout_gravity="center"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -142,7 +155,8 @@
                     android:src="@drawable/ic_keys"
                     android:contentDescription="User Profile"
                     android:layout_margin="12dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
@@ -159,10 +173,10 @@
                         android:layout_height="wrap_content"
                         android:text="Account"
                         android:fontFamily="@font/caros_font"
-
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Message Preview -->
                     <TextView
@@ -174,7 +188,8 @@
                         android:maxLines="1"
                         android:text="Privacy, security, change number"
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -192,7 +207,8 @@
                     android:src="@drawable/ic_chats"
                     android:contentDescription="User Profile"
                     android:layout_margin="12dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
@@ -211,7 +227,8 @@
                         android:fontFamily="@font/caros_font"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Message Preview -->
                     <TextView
@@ -223,7 +240,8 @@
                         android:fontFamily="@font/circular_font"
                         android:text="Chat history,theme,wallpapers"
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -241,7 +259,8 @@
                     android:src="@drawable/ic_notification"
                     android:contentDescription="User Profile"
                     android:layout_margin="12dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
@@ -260,7 +279,8 @@
                         android:fontFamily="@font/caros_font"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Message Preview -->
                     <TextView
@@ -272,7 +292,8 @@
                         android:fontFamily="@font/circular_font"
                         android:text="Messages, group and others"
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -290,7 +311,8 @@
                     android:src="@drawable/ic_help"
                     android:contentDescription="User Profile"
                     android:layout_margin="12dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
@@ -309,7 +331,8 @@
                         android:fontFamily="@font/caros_font"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Message Preview -->
                     <TextView
@@ -321,7 +344,8 @@
                         android:fontFamily="@font/circular_font"
                         android:text="Help center,contact us, privacy policy"
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -339,7 +363,8 @@
                     android:src="@drawable/ic_data"
                     android:contentDescription="User Profile"
                     android:layout_margin="12dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
@@ -358,7 +383,8 @@
                         android:fontFamily="@font/caros_font"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Message Preview -->
                     <TextView
@@ -370,7 +396,8 @@
                         android:maxLines="1"
                         android:text="Network usage, stogare usage"
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -388,7 +415,8 @@
                     android:src="@drawable/ic_users"
                     android:contentDescription="User Profile"
                     android:layout_margin="12dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
@@ -407,7 +435,8 @@
                         android:fontFamily="@font/caros_font"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:ignore="HardcodedText" />
 
                     <!-- Message Preview -->
 

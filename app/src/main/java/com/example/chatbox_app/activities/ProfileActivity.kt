@@ -30,6 +30,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var profileImageView: ImageView
     private lateinit var backButton: ImageView
     private lateinit var progressBar: ProgressBar
+    private lateinit var logOut : TextView
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
@@ -52,9 +53,11 @@ class ProfileActivity : AppCompatActivity() {
         locationText = findViewById(R.id.locAddress)
         progressBar = findViewById(R.id.profileProgress)
         imgEdit = findViewById(R.id.imgEdit)
+        logOut = findViewById(R.id.txtLogOut)
 
         // Load user profile from Firebase
         loadUserProfile()
+
 
         // Open image picker on button click
         profileImageView.setOnClickListener {
