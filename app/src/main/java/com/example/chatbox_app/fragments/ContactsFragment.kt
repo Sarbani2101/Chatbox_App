@@ -1,6 +1,7 @@
 package com.example.chatbox_app.fragments
 
-import android.content.Intent
+
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.chatbox_app.activities.ChatActivity
 import com.example.chatbox_app.adapter.ContactsAdapter
 import com.example.chatbox_app.databinding.FragmentContactsBinding
 import com.example.chatbox_app.dataclass.Contact
@@ -58,6 +58,7 @@ class ContactsFragment : Fragment() {
         binding.contactRecyclerview.visibility = View.GONE
 
         database.addListenerForSingleValueEvent(object : ValueEventListener {
+            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 contactList.clear()
                 if (snapshot.exists()) {
@@ -65,9 +66,9 @@ class ContactsFragment : Fragment() {
                         val user = userSnapshot.getValue(User::class.java)
                         if (user != null && user.uid != currentUserId) { // Exclude current user
                             val contact = Contact(
-                                name = user.name ?: "Unknown",
+                                name = user.name ,
                                 status = "Available", // Example status (can be dynamic)
-                                profileImage = user.profileImage ?: "",
+                                profileImage = user.profileImage ,
                                 uid = user.uid
                             )
                             contactList.add(contact)

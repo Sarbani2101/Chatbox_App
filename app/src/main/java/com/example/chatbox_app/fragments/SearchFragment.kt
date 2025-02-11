@@ -22,7 +22,6 @@ class SearchFragment : Fragment() {
     private lateinit var database: DatabaseReference
     private lateinit var searchAdapter: SearchAdapter
     private val searchResults = mutableListOf<ChatItem>()
-    private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(

@@ -32,7 +32,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:padding="8dp" />
+                    android:padding="8dp"
+                    tools:ignore="HardcodedText" />
 
 
                 <!-- Title -->
@@ -52,7 +53,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Profile Icon -->
 
@@ -67,7 +69,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintVertical_bias="0.0"
+                    tools:ignore="HardcodedText" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -76,7 +79,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/profileIcon"
                     app:layout_constraintEnd_toEndOf="@+id/profileIcon"
                     app:layout_constraintStart_toStartOf="@+id/profileIcon"
-                    app:layout_constraintTop_toTopOf="@+id/profileIcon" />
+                    app:layout_constraintTop_toTopOf="@+id/profileIcon"
+                    tools:ignore="ContentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -123,7 +127,8 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/contactProgress" />
+                app:layout_constraintTop_toTopOf="@id/contactProgress"
+                tools:ignore="HardcodedText" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/contactRecyclerview"
