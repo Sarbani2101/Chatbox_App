@@ -77,6 +77,7 @@ class ChatActivity : AppCompatActivity() {
             val messageText = binding.messageEditText.text.toString()
             if (messageText.isNotBlank()) {
                 sendMessage(messageText)
+                binding.messageEditText.text.clear()
             }
         }
     }
@@ -178,17 +179,15 @@ class ChatActivity : AppCompatActivity() {
             putExtra("name", selectedUserName)
         }
         setResult(Activity.RESULT_OK, resultIntent)
-        finish() // Finish the ChatActivity after sending the message
     }
 
     // Send back chat data (last message, timestamp) to the previous activity
     private fun sendBackChatDataToMainActivity(lastMessage: String = "", timestamp: String = System.currentTimeMillis().toString()) {
         val resultIntent = Intent()
-        resultIntent.putExtra("name", receiverName ?: "")
+        resultIntent.putExtra("name", receiverName )
         resultIntent.putExtra("last_message", lastMessage)
         resultIntent.putExtra("timestamp", timestamp)
         resultIntent.putExtra("receiver_uid", selectedUserId)
         setResult(RESULT_OK, resultIntent)
     }
 }
-

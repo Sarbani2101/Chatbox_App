@@ -35,7 +35,7 @@
 
             <!-- User Name -->
             <TextView
-                android:id="@+id/userName"
+                android:id="@+id/searchName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="User Name"

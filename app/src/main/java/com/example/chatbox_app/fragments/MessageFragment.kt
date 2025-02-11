@@ -116,13 +116,12 @@ class MessageFragment : Fragment() {
             val lastMessage = data?.getStringExtra("last_message") ?: ""
             val timestamp = data?.getLongExtra("timestamp", System.currentTimeMillis()) ?: System.currentTimeMillis()
             val receiverUid = data?.getStringExtra("receiver_uid") ?: ""
-            val name = data?.getStringExtra("name") ?: "Unknown User"
+            val receiverName = data?.getStringExtra("name") ?: "Unknown"
 
             // Update the chat list with the new message
-            updateChatList(receiverUid, name, lastMessage, timestamp)
+            updateChatList(receiverUid, receiverName, lastMessage, timestamp)
             binding.txtNomsg.visibility = View.GONE
-        }
-        else{
+        } else {
             binding.txtNomsg.visibility = View.VISIBLE
         }
     }
@@ -132,28 +131,39 @@ class MessageFragment : Fragment() {
         val senderUid = mAuth.currentUser?.uid ?: return
         val senderName = mAuth.currentUser?.displayName ?: "Unknown"
 
-        // Create chat objects for both sender and receiver
-        val senderChat = Chat(receiverName = receiverName, receiverUid = receiverUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
-        val receiverChat = Chat(receiverName = senderName, receiverUid = senderUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
+        // Fetch the sender's name from the database if it's not available
+        mDbRef.child("users").child(receiverUid).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val actualReceiverName = snapshot.child("name").getValue(String::class.java) ?: receiverName
 
-        // Save or update chat for sender
-        val senderChatRef = mDbRef.child("chats").child(senderUid).child(receiverUid)
-        senderChatRef.setValue(senderChat)
+                // Create chat objects for both sender and receiver
+                val senderChat = Chat(receiverName = actualReceiverName, receiverUid = receiverUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
+                val receiverChat = Chat(receiverName = senderName, receiverUid = senderUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
 
-        // Save or update chat for receiver
-        val receiverChatRef = mDbRef.child("chats").child(receiverUid).child(senderUid)
-        receiverChatRef.setValue(receiverChat)
+                // Save or update chat for sender
+                val senderChatRef = mDbRef.child("chats").child(senderUid).child(receiverUid)
+                senderChatRef.setValue(senderChat)
 
-        // Update sender's chat list locally and refresh the adapter
-        val existingChatIndex = chatList.indexOfFirst { it.receiverUid == receiverUid }
-        if (existingChatIndex != -1) {
-            chatList[existingChatIndex] = senderChat
-        } else {
-            chatList.add(0, senderChat)  // Always add the new message at the top
-        }
+                // Save or update chat for receiver
+                val receiverChatRef = mDbRef.child("chats").child(receiverUid).child(senderUid)
+                receiverChatRef.setValue(receiverChat)
 
-        chatList.sortByDescending { it.timestamp }  // Sort chats by timestamp
-        chatListAdapter.notifyDataSetChanged()  // Refresh UI
+                // Update sender's chat list locally and refresh the adapter
+                val existingChatIndex = chatList.indexOfFirst { it.receiverUid == receiverUid }
+                if (existingChatIndex != -1) {
+                    chatList[existingChatIndex] = senderChat
+                } else {
+                    chatList.add(0, senderChat)  // Always add the new message at the top
+                }
+
+                chatList.sortByDescending { it.timestamp }  // Sort chats by timestamp
+                chatListAdapter.notifyDataSetChanged()  // Refresh UI
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context, "Failed to fetch user details: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun setupClickListeners() {
@@ -312,25 +322,47 @@ class MessageFragment : Fragment() {
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     chatList.clear()
+                    val chatMap = mutableMapOf<String, Chat>()
+
                     for (data in snapshot.children) {
                         val chat = data.getValue(Chat::class.java)
                         chat?.let {
-                            chatList.add(it)
+                            // If the receiverName is missing, fetch it from the users node
+                            if (it.receiverName == "Unknown" || it.receiverName.isEmpty()) {
+                                mDbRef.child("users").child(it.receiverUid).addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(userSnapshot: DataSnapshot) {
+                                        val actualName = userSnapshot.child("name").getValue(String::class.java) ?: "Unknown"
+                                        it.receiverName = actualName
+                                        chatMap[it.receiverUid] = it  // Update the chat with the correct name
+                                        updateChatListUI(chatMap)
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        Toast.makeText(context, "Failed to fetch user details: ${error.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                })
+                            } else {
+                                chatMap[it.receiverUid] = it
+                            }
                         }
                     }
-                    chatList.sortByDescending { it.timestamp }
-                    chatListAdapter.notifyDataSetChanged()
-                    chatsLoaded = true
-                    checkDataLoadingComplete()
+                    updateChatListUI(chatMap)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(context, "Failed to load chats: ${error.message}", Toast.LENGTH_SHORT).show()
-                    chatsLoaded = true
-                    checkDataLoadingComplete()
                 }
             })
+    }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateChatListUI(chatMap: Map<String, Chat>) {
+        chatList.clear()
+        chatList.addAll(chatMap.values)
+        chatList.sortByDescending { it.timestamp }
+        chatListAdapter.notifyDataSetChanged()
+        chatsLoaded = true
+        checkDataLoadingComplete()
     }
 
     private fun checkDataLoadingComplete() {

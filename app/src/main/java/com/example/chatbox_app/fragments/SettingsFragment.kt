@@ -75,15 +75,20 @@ class SettingsFragment : Fragment() {
                     if (snapshot.exists()) {
                         val user = snapshot.getValue(User::class.java) // Retrieve User object
                         if (user != null) {
-                            binding.settingProgress.visibility = View.GONE
-                            // Display user name or a default text if null
-                            binding.settingsName.text = user.name
+                            if (_binding != null) { // Ensure fragment is still active
+                                binding.settingProgress.visibility = View.GONE
+                                binding.settingsName.text = user.name
+                            }
                         } else {
-                            binding.settingsName.text = "User Name Not Found"
-                            binding.settingProgress.visibility = View.VISIBLE
+                            if (_binding != null) {
+                                binding.settingsName.text = "User Name Not Found"
+                                binding.settingProgress.visibility = View.VISIBLE
+                            }
                         }
                     } else {
-                        binding.settingsName.text = "User Data Not Found"
+                        if (_binding != null) {
+                            binding.settingsName.text = "User Data Not Found"
+                        }
                     }
                 }
 
@@ -98,6 +103,6 @@ class SettingsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _binding = null // Prevent memory leaks
     }
 }

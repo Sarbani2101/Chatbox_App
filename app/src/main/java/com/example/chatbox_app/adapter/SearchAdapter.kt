@@ -11,12 +11,12 @@ import com.example.chatbox_app.dataclass.ChatItem
 
 class SearchAdapter(
     private val context: Context,
-    private val chatItemList: MutableList<ChatItem>,
+    private var chatItemList: MutableList<ChatItem>,
     private val onChatItemClick: (ChatItem) -> Unit // Callback for item clicks
 ) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     class SearchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val username: TextView = view.findViewById(R.id.usernameTextView)
+        val username: TextView = view.findViewById(R.id.searchName)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchViewHolder {
@@ -36,5 +36,12 @@ class SearchAdapter(
 
     override fun getItemCount(): Int {
         return chatItemList.size
+    }
+
+    // Update the list dynamically
+    fun updateList(newList: List<ChatItem>) {
+        chatItemList.clear()
+        chatItemList.addAll(newList)
+        notifyDataSetChanged()
     }
 }
