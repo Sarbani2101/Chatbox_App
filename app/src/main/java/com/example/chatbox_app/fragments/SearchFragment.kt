@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatbox_app.adapter.SearchAdapter
 import com.example.chatbox_app.databinding.FragmentSearchBinding
 import com.example.chatbox_app.dataclass.ChatItem
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 class SearchFragment : Fragment() {
