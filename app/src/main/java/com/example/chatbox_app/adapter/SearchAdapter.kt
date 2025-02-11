@@ -1,5 +1,6 @@
 package com.example.chatbox_app.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +40,7 @@ class SearchAdapter(
     }
 
     // Update the list dynamically
+    @SuppressLint("NotifyDataSetChanged")
     fun updateList(newList: List<ChatItem>) {
         chatItemList.clear()
         chatItemList.addAll(newList)
