@@ -70,9 +70,4 @@ class ChatListAdapter(
         notifyItemChanged(chatList.indexOf(chat))
 
     }
-
-    fun addMessage(chat: Chat) {
-        chatList.add(chat)
-        notifyItemInserted(chatList.size - 1)
-    }
 }

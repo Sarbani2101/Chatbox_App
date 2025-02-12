@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import com.example.chatbox_app.databinding.ActivityMainBinding
 import com.example.chatbox_app.fragments.CallsFragment
 import com.example.chatbox_app.fragments.ContactsFragment
-import com.example.chatbox_app.fragments.FriendListFragment
 import com.example.chatbox_app.fragments.MessageFragment
 import com.example.chatbox_app.fragments.SettingsFragment
 

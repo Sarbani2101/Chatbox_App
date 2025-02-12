@@ -20,6 +20,7 @@ import com.google.firebase.database.*
 import java.util.Date
 import java.util.Locale
 
+@Suppress("SameParameterValue")
 class ChatActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityChatBinding

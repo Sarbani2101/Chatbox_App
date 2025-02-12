@@ -80,7 +80,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.023"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textView13"
@@ -94,7 +95,8 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+            app:layout_constraintTop_toBottomOf="@+id/textView11"
+            tools:ignore="HardcodedText" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -106,7 +108,8 @@
             android:src="@drawable/group_rec"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toBottomOf="@+id/textView13"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/imageView3"
@@ -118,7 +121,8 @@
             android:src="@drawable/group_rec"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toBottomOf="@+id/textView13"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/textView14"
@@ -130,7 +134,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="@+id/imageView2"
             app:layout_constraintStart_toStartOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/imageView2" />
+            app:layout_constraintTop_toTopOf="@+id/imageView2"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textView15"
@@ -142,7 +147,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView3"
             app:layout_constraintEnd_toEndOf="@+id/imageView3"
             app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toTopOf="@+id/imageView3" />
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/textView16"
@@ -159,7 +165,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:id="@+id/linearLayout4"
@@ -184,7 +191,8 @@
                 android:layout_marginEnd="12dp"
                 android:contentDescription="User Profile"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_default_profile_image" />
+                android:src="@drawable/ic_default_profile_image"
+                tools:ignore="HardcodedText" />
 
             <!-- Chat Details -->
             <LinearLayout
@@ -203,7 +211,8 @@
                     android:text="User Name"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <!-- Message Preview -->
                 <TextView
@@ -215,7 +224,8 @@
                     android:maxLines="1"
                     android:text="Group Admin"
                     android:textColor="@android:color/darker_gray"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
 
 
             </LinearLayout>
@@ -233,7 +243,8 @@
             android:textColor="#797C7B"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+            tools:ignore="HardcodedText" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/groupRecyclerView"
@@ -258,7 +269,8 @@
             android:src="@drawable/group_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+            app:layout_constraintTop_toBottomOf="@+id/textView17"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/createTxt"
@@ -272,7 +284,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/createImage"
             app:layout_constraintEnd_toEndOf="@+id/createImage"
             app:layout_constraintStart_toStartOf="@+id/createImage"
-            app:layout_constraintTop_toTopOf="@+id/createImage" />
+            app:layout_constraintTop_toTopOf="@+id/createImage"
+            tools:ignore="HardcodedText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

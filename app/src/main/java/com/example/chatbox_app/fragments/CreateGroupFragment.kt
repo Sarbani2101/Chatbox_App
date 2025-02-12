@@ -1,5 +1,6 @@
 package com.example.chatbox_app.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.chatbox_app.R
 import com.example.chatbox_app.adapter.GroupAdapter
 import com.example.chatbox_app.databinding.FragmentCreateGroupBinding
 import com.example.chatbox_app.dataclass.User
@@ -27,6 +27,7 @@ class CreateGroupFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

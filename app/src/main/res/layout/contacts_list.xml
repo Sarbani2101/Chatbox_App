@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="2dp"
@@ -22,7 +23,8 @@
             android:src="@drawable/ic_default_profile_image"
             android:contentDescription="User Profile"
             android:layout_marginEnd="12dp"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            tools:ignore="HardcodedText" />
 
         <!-- Chat Details -->
         <LinearLayout
@@ -41,7 +43,8 @@
                 android:fontFamily="@font/caros_font"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
 
             <!-- Message Preview -->
             <TextView
@@ -53,7 +56,8 @@
                 android:textSize="12sp"
                 android:fontFamily="@font/circular_font"
                 android:maxLines="1"
-                android:ellipsize="end" />
+                android:ellipsize="end"
+                tools:ignore="HardcodedText" />
 
 
 

@@ -10,12 +10,10 @@ import android.util.Base64
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.chatbox_app.MainActivity
 import com.example.chatbox_app.R
 import com.example.chatbox_app.dataclass.User
-import com.example.chatbox_app.fragments.MessageFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import java.io.ByteArrayOutputStream
