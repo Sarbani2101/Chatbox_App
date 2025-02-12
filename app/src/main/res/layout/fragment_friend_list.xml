@@ -23,7 +23,7 @@
 
                 <!-- Search Icon -->
                 <ImageView
-                    android:id="@+id/searchIcon"
+                    android:id="@+id/backIcon"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_white_back"
@@ -51,7 +51,7 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/searchIcon"
+                    app:layout_constraintStart_toEndOf="@id/backIcon"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="1.0"
                     tools:ignore="HardcodedText" />

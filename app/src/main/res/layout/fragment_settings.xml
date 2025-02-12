@@ -94,6 +94,7 @@
 
                 <!-- Chat Details -->
                 <LinearLayout
+                    android:id="@+id/linearUsername"
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_marginStart="24dp"
@@ -160,6 +161,7 @@
 
                 <!-- Chat Details -->
                 <LinearLayout
+                    android:id="@+id/linearAcc"
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_marginStart="16dp"
@@ -212,6 +214,7 @@
 
                 <!-- Chat Details -->
                 <LinearLayout
+                    android:id="@+id/linearChat"
                     android:orientation="vertical"
                     android:layout_width="0dp"
                     android:layout_marginStart="16dp"

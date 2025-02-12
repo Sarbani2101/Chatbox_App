@@ -24,6 +24,13 @@ class MainActivity : AppCompatActivity() {
             .build()
         )
 
+        val openFragment = intent.getStringExtra("openFragment")
+        if (openFragment == "MessageFragment") {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, MessageFragment())
+                .commit()
+        }
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -37,7 +44,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setOnItemSelectedListener { menuItem ->
             val fragment: Fragment = when (menuItem.itemId) {
                 R.id.nav_message -> MessageFragment()
-                R.id.nav_friend_list -> FriendListFragment()
                 R.id.nav_calls -> CallsFragment()
                 R.id.nav_contacts -> ContactsFragment()
                 R.id.nav_settings -> SettingsFragment()
@@ -60,8 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         if (currentFragment is SettingsFragment ||
             currentFragment is ContactsFragment ||
-            currentFragment is CallsFragment ||
-            currentFragment is FriendListFragment) {
+            currentFragment is CallsFragment) {
             replaceFragment(MessageFragment()) // Navigate back to MessageFragment
         } else {
             super.onBackPressed() // Default back behavior (exit the app)

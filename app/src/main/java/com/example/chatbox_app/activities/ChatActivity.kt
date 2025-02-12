@@ -1,6 +1,5 @@
 package com.example.chatbox_app.activities
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -16,7 +15,10 @@ import com.example.chatbox_app.databinding.ActivityChatBinding
 import com.example.chatbox_app.dataclass.Chat
 import com.example.chatbox_app.dataclass.Message
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
 import com.google.firebase.database.*
+import java.util.Date
+import java.util.Locale
 
 class ChatActivity : AppCompatActivity() {
 
@@ -33,7 +35,6 @@ class ChatActivity : AppCompatActivity() {
     private var chatId: String? = null
     private var receiverName: String? = null
 
-
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,35 +42,33 @@ class ChatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mAuth = FirebaseAuth.getInstance()
-        mDbRef = FirebaseDatabase.getInstance().getReference("users") // Updated to 'users'
-        database = FirebaseDatabase.getInstance().reference
+        mDbRef = FirebaseDatabase.getInstance().getReference("users") // For user data
+        database = FirebaseDatabase.getInstance().reference  // For chats
         currentUserId = mAuth.currentUser?.uid
         selectedUserId = intent.getStringExtra("selected_user_id")
         receiverName = intent.getStringExtra("selected_user_name")
 
-        // Generate a unique chat ID (based on user ids)
+        // Generate a unique chat ID based on the user ids
         chatId = generateChatId()
-
         if (chatId == null) {
             Toast.makeText(this, "Chat initialization failed", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Set up user details in the chat header
+        // Set up chat header details
         binding.userName.text = receiverName ?: "Unknown User"
         binding.userStatus.text = "Active now"
 
-        // Set up RecyclerView for chat messages
         setupRecyclerView()
         loadMessages()
+        checkUserStatus()
 
-        // Handle back button click
+        // Back button logic
         binding.backImg.setOnClickListener {
             sendBackChatDataToMainActivity()
-            finish()  // Optionally finish the current activity
+            finish()
         }
 
-        // Set up message input logic
         setupMessageInput()
 
         // Handle send button click
@@ -78,8 +77,19 @@ class ChatActivity : AppCompatActivity() {
             if (messageText.isNotBlank()) {
                 sendMessage(messageText)
                 binding.messageEditText.text.clear()
+                updateTypingStatus(false) // Reset typing status after sending message
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateUserStatus("Active now")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        updateLastSeen()
     }
 
     private fun generateChatId(): String? {
@@ -96,9 +106,7 @@ class ChatActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         chatAdapter = ChatAdapter(messages, currentUserId ?: "")
         binding.chatRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@ChatActivity).apply {
-                stackFromEnd = true
-            }
+            layoutManager = LinearLayoutManager(this@ChatActivity).apply { stackFromEnd = true }
             adapter = chatAdapter
         }
     }
@@ -128,22 +136,21 @@ class ChatActivity : AppCompatActivity() {
     private fun setupMessageInput() {
         binding.messageEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s.isNullOrBlank()) {
                     binding.sendButton.visibility = View.GONE
                     binding.microImg.visibility = View.VISIBLE
+                    updateTypingStatus(false)
                 } else {
                     binding.sendButton.visibility = View.VISIBLE
                     binding.microImg.visibility = View.GONE
+                    updateTypingStatus(true)
                 }
             }
-
             override fun afterTextChanged(s: Editable?) {}
         })
     }
 
-    // Chat Activity - Sending the message and updating chat list
     private fun sendMessage(message: String) {
         val currentUserId = mAuth.currentUser?.uid ?: return
         val selectedUserId = intent.getStringExtra("selected_user_id") ?: return
@@ -154,13 +161,14 @@ class ChatActivity : AppCompatActivity() {
             senderId = currentUserId,
             receiverId = selectedUserId,
             message = message,
-            timestamp = System.currentTimeMillis().toString()
+            timestamp = System.currentTimeMillis().toString(),
         )
 
         // Save the chat message to Firebase under the chat ID
         database.child("chats").child(chatId!!).push().setValue(chatMessage)
+        updateTypingStatus(false)
 
-        // Save chat summary (last message and timestamp)
+        // Save chat summary (this example saves it under the "chats" node; adjust as needed)
         val chatSummary = Chat(
             receiverName = selectedUserName,
             receiverUid = selectedUserId,
@@ -171,7 +179,7 @@ class ChatActivity : AppCompatActivity() {
 
         mDbRef.child("chats").child(currentUserId).child(selectedUserId).setValue(chatSummary)
 
-        // Return to MessageFragment with the new message
+        // Return updated data back (if needed)
         val resultIntent = Intent().apply {
             putExtra("last_message", message)
             putExtra("timestamp", System.currentTimeMillis())
@@ -179,15 +187,69 @@ class ChatActivity : AppCompatActivity() {
             putExtra("name", selectedUserName)
         }
         setResult(Activity.RESULT_OK, resultIntent)
+        updateUserStatus("Active now")
     }
 
-    // Send back chat data (last message, timestamp) to the previous activity
+    private fun updateUserStatus(status: String) {
+        mDbRef.child(currentUserId!!).child("status").setValue(status)
+    }
+
+    private fun updateLastSeen() {
+        val time = System.currentTimeMillis().toString()
+        mDbRef.child(currentUserId!!).child("status").setValue(time) // Update last seen timestamp
+    }
+
+    private fun updateTypingStatus(isTyping: Boolean) {
+        mDbRef.child(currentUserId!!).child("typing").setValue(isTyping)
+    }
+
+    private fun checkUserStatus() {
+        mDbRef.child(selectedUserId!!).child("status").addValueEventListener(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val status = snapshot.getValue(String::class.java)
+                if (status == "Active now") {
+                    binding.userStatus.text = "Active now"
+                } else {
+                    val lastSeenTime = status?.toLongOrNull()
+                    binding.userStatus.text = if (lastSeenTime != null) {
+                        "Last seen ${formatTime(lastSeenTime)}"
+                    } else {
+                        "Last seen unknown"
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+
+        mDbRef.child(selectedUserId!!).child("typing").addValueEventListener(object : ValueEventListener {
+            @SuppressLint("SetTextI18n")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.getValue(Boolean::class.java) == true) {
+                    binding.userStatus.text = "Typing..."
+                } else {
+                    // If not typing, refresh the user's status
+                    checkUserStatus() // Refresh user status
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
+    private fun formatTime(timestamp: Long): String {
+        val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
+        return sdf.format(Date(timestamp))
+    }
+
     private fun sendBackChatDataToMainActivity(lastMessage: String = "", timestamp: String = System.currentTimeMillis().toString()) {
-        val resultIntent = Intent()
-        resultIntent.putExtra("name", receiverName )
-        resultIntent.putExtra("last_message", lastMessage)
-        resultIntent.putExtra("timestamp", timestamp)
-        resultIntent.putExtra("receiver_uid", selectedUserId)
+        val resultIntent = Intent().apply {
+            putExtra("name", receiverName)
+            putExtra("last_message", lastMessage)
+            putExtra("timestamp", timestamp)
+            putExtra("receiver_uid", selectedUserId)
+        }
         setResult(RESULT_OK, resultIntent)
     }
 }

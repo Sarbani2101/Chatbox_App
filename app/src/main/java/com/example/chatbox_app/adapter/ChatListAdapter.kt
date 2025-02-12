@@ -1,4 +1,7 @@
+package com.example.chatbox_app.adapter
+
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -9,8 +12,10 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class ChatListAdapter(private val chatList: MutableList<Chat>, private val onChatClick: (Chat) -> Unit) :
-    RecyclerView.Adapter<ChatListAdapter.ChatViewHolder>() {
+class ChatListAdapter(
+    private val chatList: MutableList<Chat>,
+    private val onChatClick: (Chat) -> Unit
+) : RecyclerView.Adapter<ChatListAdapter.ChatViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
         val binding = ChatListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -30,14 +35,26 @@ class ChatListAdapter(private val chatList: MutableList<Chat>, private val onCha
             binding.chatMessagePreview.text = chat.lastMessage
             binding.chattime.text = formatTimestamp(chat.timestamp)
 
-            // Use Glide to load the profile image
+            // Load profile image using Glide
             Glide.with(binding.root.context)
-                .load(chat.profileImageUrl) // Ensure that profileImageUrl is part of your Chat object.
+                .load(chat.profileImageUrl)
                 .placeholder(R.drawable.ic_default_profile_image)
                 .into(binding.userProfileImage)
 
+            binding.unreadIndicator.visibility = if (!chat.isSent && !chat.isRead) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            // When the user clicks a chat, open the chat activity
             binding.root.setOnClickListener {
                 onChatClick(chat)
+
+                // If the message is received and unread, mark it as read
+                if (!chat.isSent && !chat.isRead) {
+                    markMessageAsRead(chat) // Mark message as read in the database
+                }
             }
         }
 
@@ -46,5 +63,16 @@ class ChatListAdapter(private val chatList: MutableList<Chat>, private val onCha
             val format = SimpleDateFormat("HH:mm", Locale.getDefault())
             return format.format(date)
         }
+    }
+
+    private fun markMessageAsRead(chat: Chat) {
+        chat.isRead = true
+        notifyItemChanged(chatList.indexOf(chat))
+
+    }
+
+    fun addMessage(chat: Chat) {
+        chatList.add(chat)
+        notifyItemInserted(chatList.size - 1)
     }
 }

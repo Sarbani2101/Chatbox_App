@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.chatbox_app.R
 import com.example.chatbox_app.activities.NotificationActivity
 import com.example.chatbox_app.activities.ProfileActivity
 import com.example.chatbox_app.databinding.FragmentSettingsBinding
@@ -44,13 +45,21 @@ class SettingsFragment : Fragment() {
         }
 
         // Navigate to ProfileActivity
-        binding.account.setOnClickListener {
+        binding.linearAcc.setOnClickListener {
+            startActivity(Intent(requireContext(), ProfileActivity::class.java))
+        }
+
+        binding.linearUsername.setOnClickListener {
             startActivity(Intent(requireContext(), ProfileActivity::class.java))
         }
 
         // Navigate to NotificationActivity
         binding.notification.setOnClickListener {
             startActivity(Intent(requireContext(), NotificationActivity::class.java))
+        }
+
+        binding.linearChat.setOnClickListener {
+            replaceFragment(MessageFragment()) // Ensure MessageFragment exists
         }
 
         // Other settings (yet to be implemented)
@@ -63,6 +72,12 @@ class SettingsFragment : Fragment() {
         loadUserAccount()
     }
 
+    private fun replaceFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .commit()
+    }
+
     private fun loadUserAccount() {
         val currentUser = auth.currentUser
         if (currentUser != null) {
@@ -72,28 +87,21 @@ class SettingsFragment : Fragment() {
             database.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
                 @SuppressLint("SetTextI18n")
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (_binding == null) return // Prevent crash if the fragment is destroyed
+
+                    binding.settingProgress.visibility = View.GONE
                     if (snapshot.exists()) {
-                        val user = snapshot.getValue(User::class.java) // Retrieve User object
-                        if (user != null) {
-                            if (_binding != null) { // Ensure fragment is still active
-                                binding.settingProgress.visibility = View.GONE
-                                binding.settingsName.text = user.name
-                            }
-                        } else {
-                            if (_binding != null) {
-                                binding.settingsName.text = "User Name Not Found"
-                                binding.settingProgress.visibility = View.VISIBLE
-                            }
-                        }
+                        val user = snapshot.getValue(User::class.java)
+                        binding.settingsName.text = user?.name ?: "User Name Not Found"
                     } else {
-                        if (_binding != null) {
-                            binding.settingsName.text = "User Data Not Found"
-                        }
+                        binding.settingsName.text = "User Data Not Found"
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(context, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    if (_binding != null) {
+                        Toast.makeText(context, "Error: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
                 }
             })
         } else {

@@ -1,28 +1,21 @@
 package com.example.chatbox_app.fragments
 
-import ChatListAdapter
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.chatbox_app.activities.ChatActivity
 import com.example.chatbox_app.adapter.StoriesAdapter
 import com.example.chatbox_app.databinding.FragmentMessageBinding
 import com.example.chatbox_app.dataclass.Chat
-import com.example.chatbox_app.R
 import com.example.chatbox_app.activities.ProfileActivity
+import com.example.chatbox_app.adapter.ChatListAdapter
 import com.example.chatbox_app.dataclass.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -66,17 +59,14 @@ class MessageFragment : Fragment() {
 
         setupRecyclerViews()
         setupClickListeners()
-        setupSwipeToDelete()
     }
 
     private fun setupRecyclerViews() {
-        mAuth.currentUser?.displayName ?: "Guest"
-        mAuth.currentUser?.uid ?: ""
-
         storiesAdapter = StoriesAdapter(userList) { selectedUser ->
             navigateToChatActivity(selectedUser.uid, selectedUser.name)
         }
-        binding.storiesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.storiesRecyclerView.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.storiesRecyclerView.adapter = storiesAdapter
 
         chatListAdapter = ChatListAdapter(chatList) { selectedChat ->
@@ -95,7 +85,6 @@ class MessageFragment : Fragment() {
             putExtra("selected_user_name", selectedUserName)
         }
         startActivityForResult(intent, CHAT_ACTIVITY_REQUEST_CODE)
-
     }
 
     private fun navigateToChatActivity(selectedChat: Chat) {
@@ -131,39 +120,46 @@ class MessageFragment : Fragment() {
         val senderUid = mAuth.currentUser?.uid ?: return
         val senderName = mAuth.currentUser?.displayName ?: "Unknown"
 
-        // Fetch the sender's name from the database if it's not available
-        mDbRef.child("users").child(receiverUid).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val actualReceiverName = snapshot.child("name").getValue(String::class.java) ?: receiverName
+        // Firebase references for both the sender's and receiver's chat records
+        val senderChatRef = mDbRef.child("chats").child(senderUid).child(receiverUid)
+        val receiverChatRef = mDbRef.child("chats").child(receiverUid).child(senderUid)
 
-                // Create chat objects for both sender and receiver
-                val senderChat = Chat(receiverName = actualReceiverName, receiverUid = receiverUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
-                val receiverChat = Chat(receiverName = senderName, receiverUid = senderUid, lastMessage = lastMessage, timestamp = timestamp, isRead = false)
+        // For the current user (sender): mark the chat as sent and already read.
+        val senderChat = Chat(
+            receiverName = receiverName,
+            receiverUid = receiverUid,
+            lastMessage = lastMessage,
+            timestamp = timestamp,
+            isRead = true,    // Sender’s own message is considered read
+            isSent = true,    // Message is sent by current user
+            profileImageUrl = ""  // Provide profile image URL if available
+        )
 
-                // Save or update chat for sender
-                val senderChatRef = mDbRef.child("chats").child(senderUid).child(receiverUid)
-                senderChatRef.setValue(senderChat)
+        // For the other user (receiver): mark the chat as received and unread.
+        val receiverChat = Chat(
+            receiverName = senderName,
+            receiverUid = senderUid,
+            lastMessage = lastMessage,
+            timestamp = timestamp,
+            isRead = false,   // New message is unread for receiver
+            isSent = false,   // Message is received (not sent by them)
+            profileImageUrl = ""  // Provide profile image URL if available
+        )
 
-                // Save or update chat for receiver
-                val receiverChatRef = mDbRef.child("chats").child(receiverUid).child(senderUid)
-                receiverChatRef.setValue(receiverChat)
+        // Save both chat records in Firebase
+        senderChatRef.setValue(senderChat)
+        receiverChatRef.setValue(receiverChat)
 
-                // Update sender's chat list locally and refresh the adapter
-                val existingChatIndex = chatList.indexOfFirst { it.receiverUid == receiverUid }
-                if (existingChatIndex != -1) {
-                    chatList[existingChatIndex] = senderChat
-                } else {
-                    chatList.add(0, senderChat)  // Always add the new message at the top
-                }
+        // Update the local chat list (for the sender) accordingly.
+        val existingChatIndex = chatList.indexOfFirst { it.receiverUid == receiverUid }
+        if (existingChatIndex != -1) {
+            chatList[existingChatIndex] = senderChat
+        } else {
+            chatList.add(0, senderChat)
+        }
 
-                chatList.sortByDescending { it.timestamp }  // Sort chats by timestamp
-                chatListAdapter.notifyDataSetChanged()  // Refresh UI
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, "Failed to fetch user details: ${error.message}", Toast.LENGTH_SHORT).show()
-            }
-        })
+        chatList.sortByDescending { it.timestamp }
+        chatListAdapter.notifyDataSetChanged()
     }
 
     private fun setupClickListeners() {
@@ -178,116 +174,12 @@ class MessageFragment : Fragment() {
         }
     }
 
-    private fun setupSwipeToDelete() {
-        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val chat = chatList[position]
-
-                if (direction == ItemTouchHelper.LEFT) {
-                    // Swipe Left: Mark as Read/Unread
-                    toggleReadStatus(chat)
-                } else if (direction == ItemTouchHelper.RIGHT) {
-                    // Swipe Right: Delete the chat
-                    deleteChat(chat)
-                }
-            }
-
-            override fun onChildDraw(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                val itemView = viewHolder.itemView
-                val background = ColorDrawable(Color.TRANSPARENT)
-
-                if (dX < 0) {
-                    // Swipe left: Mark as Read/Unread
-                    background.setBounds(itemView.right + dX.toInt(), itemView.top, itemView.right, itemView.bottom)
-                    background.draw(c)
-
-                    val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_unread)
-                    val iconMargin = (itemView.height - (icon?.intrinsicHeight ?: 0)) / 2
-                    val iconTop = itemView.top + iconMargin
-                    val iconBottom = iconTop + (icon?.intrinsicHeight ?: 0)
-                    val iconLeft = itemView.right - icon?.intrinsicWidth!! - 100
-                    val iconRight = itemView.right - 100
-
-                    icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                    icon.draw(c)
-                }
-
-                if (dX > 0) {
-                    // Swipe right: Show delete option
-                    val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_trash)
-                    val iconMargin = (itemView.height - (icon?.intrinsicHeight ?: 0)) / 2
-                    val iconTop = itemView.top + iconMargin
-                    val iconBottom = iconTop + (icon?.intrinsicHeight ?: 0)
-                    val iconLeft = itemView.left + 100
-                    val iconRight = itemView.left + 200
-
-                    icon?.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                    icon?.draw(c)
-                }
-            }
-
-            override fun onChildDrawOver(
-                c: Canvas,
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                dX: Float,
-                dY: Float,
-                actionState: Int,
-                isCurrentlyActive: Boolean
-            ) {
-                super.onChildDrawOver(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-            }
-        })
-        itemTouchHelper.attachToRecyclerView(binding.chatListRecyclerView)
-    }
-
-    private fun toggleReadStatus(chat: Chat) {
-        val updatedChat = chat.copy(isRead = !chat.isRead)
-
-        // Update in Firebase
-        mDbRef.child("chats").child(mAuth.currentUser?.uid ?: "").child(chat.receiverUid).setValue(updatedChat)
-
-        // Update locally and refresh the adapter
-        val index = chatList.indexOfFirst { it.receiverUid == chat.receiverUid }
-        if (index != -1) {
-            chatList[index] = updatedChat
-            chatListAdapter.notifyItemChanged(index)
-        }
-    }
-
-    private fun deleteChat(chat: Chat) {
-        // Delete from Firebase
-        mDbRef.child("chats").child(mAuth.currentUser?.uid ?: "").child(chat.receiverUid).removeValue()
-
-        // Remove locally and refresh the adapter
-        val index = chatList.indexOfFirst { it.receiverUid == chat.receiverUid }
-        if (index != -1) {
-            chatList.removeAt(index)
-            chatListAdapter.notifyItemRemoved(index)
-        }
-    }
-
     private fun fetchUsersFromDatabase() {
         mDbRef.child("users").addListenerForSingleValueEvent(object : ValueEventListener {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isAdded || _binding == null) return // Prevent updates if fragment is destroyed
+
                 userList.clear()
                 val currentUser = mAuth.currentUser ?: return
                 val currentUserRef = snapshot.child(currentUser.uid)
@@ -297,7 +189,10 @@ class MessageFragment : Fragment() {
 
                 val nearbyUsers = snapshot.children.mapNotNull { data ->
                     val user = data.getValue(User::class.java)
-                    user?.takeIf { it.uid != currentUser.uid && calculateDistance(currentLatitude, currentLongitude, it.latitude, it.longitude) <= MAX_RADIUS_KM }
+                    user?.takeIf {
+                        it.uid != currentUser.uid &&
+                                calculateDistance(currentLatitude, currentLongitude, it.latitude, it.longitude) <= MAX_RADIUS_KM
+                    }
                 }
 
                 userList.clear()
@@ -318,29 +213,34 @@ class MessageFragment : Fragment() {
 
     private fun fetchChatsFromDatabase(userId: String) {
         mDbRef.child("chats").child(userId).orderByChild("timestamp")
-            .addListenerForSingleValueEvent(object : ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!isAdded || _binding == null) return
+
                     chatList.clear()
                     val chatMap = mutableMapOf<String, Chat>()
 
                     for (data in snapshot.children) {
                         val chat = data.getValue(Chat::class.java)
                         chat?.let {
-                            // If the receiverName is missing, fetch it from the users node
                             if (it.receiverName == "Unknown" || it.receiverName.isEmpty()) {
-                                mDbRef.child("users").child(it.receiverUid).addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onDataChange(userSnapshot: DataSnapshot) {
-                                        val actualName = userSnapshot.child("name").getValue(String::class.java) ?: "Unknown"
-                                        it.receiverName = actualName
-                                        chatMap[it.receiverUid] = it  // Update the chat with the correct name
-                                        updateChatListUI(chatMap)
-                                    }
+                                mDbRef.child("users").child(it.receiverUid)
+                                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                                        override fun onDataChange(userSnapshot: DataSnapshot) {
+                                            if (!isAdded || _binding == null) return
 
-                                    override fun onCancelled(error: DatabaseError) {
-                                        Toast.makeText(context, "Failed to fetch user details: ${error.message}", Toast.LENGTH_SHORT).show()
-                                    }
-                                })
+                                            val actualName = userSnapshot.child("name").getValue(String::class.java) ?: "Unknown"
+                                            it.receiverName = actualName
+                                            chatMap[it.receiverUid] = it
+                                            updateChatListUI(chatMap)
+                                            binding.txtNomsg.visibility = if (chatList.isEmpty()) View.VISIBLE else View.GONE
+                                        }
+
+                                        override fun onCancelled(error: DatabaseError) {
+                                            Toast.makeText(context, "Failed to fetch user details: ${error.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                    })
                             } else {
                                 chatMap[it.receiverUid] = it
                             }
@@ -357,13 +257,23 @@ class MessageFragment : Fragment() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun updateChatListUI(chatMap: Map<String, Chat>) {
+        if (!isAdded || _binding == null) return
+
         chatList.clear()
         chatList.addAll(chatMap.values)
         chatList.sortByDescending { it.timestamp }
         chatListAdapter.notifyDataSetChanged()
+
+        if (chatList.isEmpty()) {
+            binding.txtNomsg.visibility = View.VISIBLE
+        } else {
+            binding.txtNomsg.visibility = View.GONE
+        }
+
         chatsLoaded = true
         checkDataLoadingComplete()
     }
+
 
     private fun checkDataLoadingComplete() {
         if (chatsLoaded && usersLoaded && binding.progressBar.visibility == View.VISIBLE) {
@@ -379,7 +289,7 @@ class MessageFragment : Fragment() {
                 Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
                 Math.sin(dLon / 2) * Math.sin(dLon / 2)
         val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        return R * c  // Return distance in kilometers
+        return R * c
     }
 
     override fun onDestroyView() {

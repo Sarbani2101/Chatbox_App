@@ -29,7 +29,7 @@ class ContactsAdapter(
 
     inner class ContactViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val profileImage: CircleImageView = itemView.findViewById(R.id.userProfileImage)
-        private val contactName: TextView = itemView.findViewById(R.id.contactName)
+        private val contactName: TextView = itemView.findViewById(R.id.adminName)
 
         fun bind(contact: Contact) {
             contactName.text = contact.name
