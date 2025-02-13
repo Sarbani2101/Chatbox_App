@@ -60,6 +60,7 @@ class ProfileActivity : AppCompatActivity() {
 
         // Load user profile from Firebase
         loadUserProfile()
+        listenForNameChanges()
 
         // Open image picker on profile image click
         profileImageView.setOnClickListener { openImagePicker() }
@@ -113,68 +114,89 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun updateUserName(userId: String, newName: String) {
         val userRef = database.child(userId)
-        // Reference to chat list entries (adjust node name if needed)
         val chatListRef = FirebaseDatabase.getInstance().getReference("ChatList")
-        // Reference to chat messages (adjust node name if needed)
         val chatsRef = FirebaseDatabase.getInstance().getReference("chats")
 
         // 1. Update the user's name in their profile
         userRef.child("name").setValue(newName).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                // Update local UI
                 nameTextView.text = newName
                 nameText.text = newName
                 Toast.makeText(this, "Name updated successfully!", Toast.LENGTH_SHORT).show()
 
                 // 2. Update all chat messages where this user is the sender
-                chatsRef.orderByChild("senderId").equalTo(userId)
-                    .addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (messageSnapshot in snapshot.children) {
-                                // Assumes each message object has a "senderName" field
-                                messageSnapshot.ref.child("senderName").setValue(newName)
-                            }
-                        }
+                updateChatMessages(chatsRef, userId, newName)
 
-                        override fun onCancelled(error: DatabaseError) {
-                            Toast.makeText(this@ProfileActivity, "Failed to update chat messages", Toast.LENGTH_SHORT).show()
-                        }
-                    })
+                // 3. Update chat list entries where the user is the sender
+                updateChatListEntries(chatListRef, userId, newName, true)
 
-                // 3a. Update chat list entries where the user is the sender
-                chatListRef.orderByChild("senderId").equalTo(userId)
-                    .addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (chatSnapshot in snapshot.children) {
-                                // Assumes each chat summary has a "senderName" field
-                                chatSnapshot.ref.child("senderName").setValue(newName)
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            Toast.makeText(this@ProfileActivity, "Failed to update chat list (sender)", Toast.LENGTH_SHORT).show()
-                        }
-                    })
-
-                // 3b. Update chat list entries where the user is the receiver
-                chatListRef.orderByChild("receiverId").equalTo(userId)
-                    .addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (chatSnapshot in snapshot.children) {
-                                // Assumes each chat summary has a "receiverName" field
-                                chatSnapshot.ref.child("receiverName").setValue(newName)
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            Toast.makeText(this@ProfileActivity, "Failed to update chat list (receiver)", Toast.LENGTH_SHORT).show()
-                        }
-                    })
-
+                // 4. Update chat list entries where the user is the receiver
+                updateChatListEntries(chatListRef, userId, newName, false)
             } else {
                 Toast.makeText(this, "Failed to update name.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun updateChatMessages(chatsRef: DatabaseReference, userId: String, newName: String) {
+        chatsRef.orderByChild("senderId").equalTo(userId)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (messageSnapshot in snapshot.children) {
+                        messageSnapshot.ref.child("senderName").setValue(newName)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@ProfileActivity, "Failed to update chat messages", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    private fun updateChatListEntries(chatListRef: DatabaseReference, userId: String, newName: String, isSender: Boolean) {
+        val query = if (isSender) {
+            chatListRef.orderByChild("senderId").equalTo(userId)
+        } else {
+            chatListRef.orderByChild("receiverId").equalTo(userId)
+        }
+
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (chatSnapshot in snapshot.children) {
+                    if (isSender) {
+                        chatSnapshot.ref.child("senderName").setValue(newName)
+                    } else {
+                        chatSnapshot.ref.child("receiverName").setValue(newName)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ProfileActivity, "Failed to update chat list", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun listenForNameChanges() {
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return
+        val userId = currentUser.uid
+        val userRef = FirebaseDatabase.getInstance().getReference("users").child(userId)
+
+        userRef.child("name").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val newName = snapshot.getValue(String::class.java)
+                    if (!newName.isNullOrEmpty()) {
+                        nameTextView.text = newName  // Update UI
+                        nameText.text = newName      // If there's another TextView for name
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ProfileActivity, "Failed to update UI: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     private fun openImagePicker() {

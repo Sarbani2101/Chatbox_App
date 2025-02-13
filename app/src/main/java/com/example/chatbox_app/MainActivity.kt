@@ -9,12 +9,14 @@ import com.example.chatbox_app.fragments.CallsFragment
 import com.example.chatbox_app.fragments.ContactsFragment
 import com.example.chatbox_app.fragments.MessageFragment
 import com.example.chatbox_app.fragments.SettingsFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
@@ -29,7 +31,6 @@ class MainActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, MessageFragment())
                 .commit()
         }
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

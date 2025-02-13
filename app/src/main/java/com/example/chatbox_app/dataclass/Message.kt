@@ -2,6 +2,7 @@ package com.example.chatbox_app.dataclass
 
 data class Message(
     val senderId: String = "",
+    var senderName: String = "",
     val message: String = "",
     val timestamp: String = "",
     val receiverId : String = "",

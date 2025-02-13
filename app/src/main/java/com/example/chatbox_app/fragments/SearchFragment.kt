@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chatbox_app.adapter.SearchAdapter
 import com.example.chatbox_app.databinding.FragmentSearchBinding
-import com.example.chatbox_app.dataclass.ChatItem
+import com.example.chatbox_app.dataclass.User
 import com.google.firebase.database.*
 
 class SearchFragment : Fragment() {
@@ -20,8 +20,7 @@ class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var database: DatabaseReference
     private lateinit var searchAdapter: SearchAdapter
-    private val chatList = mutableListOf<ChatItem>() // Full user list from Firebase
-    private val filteredList = mutableListOf<ChatItem>() // Filtered user list based on search query
+    private val chatList = mutableListOf<User>() // Full user list from Firebase
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,9 +30,9 @@ class SearchFragment : Fragment() {
 
         // Initialize RecyclerView
         binding.recyclerViewSearch.layoutManager = LinearLayoutManager(requireContext())
-        searchAdapter = SearchAdapter(requireContext(), filteredList) { chatItem ->
+        searchAdapter = SearchAdapter(requireContext(), mutableListOf()) { chatItem ->
             // Handle item click (e.g., navigate to chat or show user details)
-            Toast.makeText(requireContext(), "Clicked on ${chatItem.username}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Clicked on ${chatItem.name}", Toast.LENGTH_SHORT).show()
         }
         binding.recyclerViewSearch.adapter = searchAdapter
 
@@ -45,13 +44,17 @@ class SearchFragment : Fragment() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                // Perform filtering as the user types
                 val query = s.toString().trim()
                 filterUsers(query)
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
+
+        binding.searchClearIcon.setOnClickListener {
+            binding.searchEditText.text.clear()
+            fetchUsers()
+        }
 
         // Handle search icon click
         binding.searchIcon.setOnClickListener {
@@ -66,20 +69,15 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    // Fetch all users from Firebase
     private fun fetchUsers() {
         database.addValueEventListener(object : ValueEventListener {
-            @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 chatList.clear()
                 for (userSnapshot in snapshot.children) {
-                    val user = userSnapshot.getValue(ChatItem::class.java)
+                    val user = userSnapshot.getValue(User::class.java)
                     user?.let { chatList.add(it) }
                 }
-                // Initially, show all users
-                filteredList.clear()
-                filteredList.addAll(chatList)
-                searchAdapter.notifyDataSetChanged()
+                searchAdapter.updateList(chatList) // Update adapter with full user list
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -88,19 +86,12 @@ class SearchFragment : Fragment() {
         })
     }
 
-    // Filter users based on search input
     @SuppressLint("NotifyDataSetChanged")
     private fun filterUsers(query: String) {
-        filteredList.clear()
+        val filteredList = chatList.filter { it.name.contains(query, ignoreCase = true) }
+        searchAdapter.updateList(filteredList)
 
-        // Perform filtering (case-insensitive)
-        filteredList.addAll(chatList.filter { it.username.contains(query, ignoreCase = true) })
-
-        // Update the RecyclerView with the filtered list
-        searchAdapter.notifyDataSetChanged()
-
-        // Show a message if no users match the search query
-        if (filteredList.isEmpty()) {
+        if (filteredList.isEmpty() && query.isNotEmpty()) {
             Toast.makeText(requireContext(), "No users found for \"$query\"", Toast.LENGTH_SHORT).show()
         }
     }

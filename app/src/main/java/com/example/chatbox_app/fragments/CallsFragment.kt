@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +18,7 @@ import com.google.firebase.database.*
 class CallsFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var searchIcon : ImageView
     private lateinit var callsAdapter: CallsAdapter
     private lateinit var userList: ArrayList<User>
     private lateinit var database: DatabaseReference
@@ -28,6 +30,7 @@ class CallsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_calls, container, false)
 
         recyclerView = view.findViewById(R.id.callsRecyclerview)
+        searchIcon = view.findViewById(R.id.searchIcon)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         userList = ArrayList()
@@ -37,6 +40,14 @@ class CallsFragment : Fragment() {
         database = FirebaseDatabase.getInstance().getReference("Users")
 
         fetchUsers()
+
+        searchIcon.setOnClickListener {
+            val searchFragment = SearchFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, searchFragment)
+                .addToBackStack(null)
+                .commit()
+        }
 
         return view
     }

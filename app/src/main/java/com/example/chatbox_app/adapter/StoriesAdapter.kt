@@ -10,7 +10,7 @@ import com.example.chatbox_app.dataclass.User
 
 class StoriesAdapter(
     private var userList: MutableList<User>,
-    private val onClickListener: (User) -> Unit
+    private val onClickListener: (User) -> Unit,
 ) : RecyclerView.Adapter<StoriesAdapter.StoriesViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoriesViewHolder {
@@ -23,8 +23,6 @@ class StoriesAdapter(
     }
 
     override fun getItemCount(): Int = userList.size
-
-
 
     inner class StoriesViewHolder(private val binding: StoryListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {

@@ -76,6 +76,8 @@ dependencies {
     //noinspection UseTomlInstead
     implementation ("de.hdodenhof:circleimageview:3.1.0")
 
+//    implementation ("com.google.firebase:firebase-messaging:23.1.0")
+//    debugImplementation ("com.squareup.leakcanary:leakcanary-android:2.14")
 
     val nav_version = "2.8.5"
 

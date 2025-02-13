@@ -31,7 +31,6 @@ class CreateGroupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize the group adapter and set the RecyclerView
         groupAdapter = GroupAdapter(users) { user ->
             addUserToGroup(user)
         }
@@ -40,20 +39,12 @@ class CreateGroupFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = groupAdapter
         }
-
-        // Set admin name (who is creating the group)
-        binding.adminName.text = "Admin: John" // Replace with the actual user's name
-
-        // Hide RecyclerView until users are added
+        binding.adminName.text = "Admin: John"
         binding.groupRecyclerView.visibility = View.GONE
     }
 
     private fun addUserToGroup(user: User) {
-        // Add the user to the group
-        // In this example, we're just displaying a message. In a real app, you'd update the group data.
         Toast.makeText(requireContext(), "${user.name} added to the group", Toast.LENGTH_SHORT).show()
-
-        // After adding the user, hide the add button and show the group chat UI
         binding.groupRecyclerView.visibility = View.VISIBLE
     }
 

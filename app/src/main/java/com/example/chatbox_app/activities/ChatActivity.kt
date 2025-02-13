@@ -15,8 +15,8 @@ import com.example.chatbox_app.databinding.ActivityChatBinding
 import com.example.chatbox_app.dataclass.Chat
 import com.example.chatbox_app.dataclass.Message
 import com.google.firebase.auth.FirebaseAuth
-import java.text.SimpleDateFormat
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
@@ -63,6 +63,7 @@ class ChatActivity : AppCompatActivity() {
         setupRecyclerView()
         loadMessages()
         checkUserStatus()
+        listenForUserNameChanges()
 
         // Back button logic
         binding.backImg.setOnClickListener {
@@ -163,13 +164,14 @@ class ChatActivity : AppCompatActivity() {
             receiverId = selectedUserId,
             message = message,
             timestamp = System.currentTimeMillis().toString(),
+            senderName = mAuth.currentUser?.displayName ?: "Unknown" // Store sender's name
         )
 
         // Save the chat message to Firebase under the chat ID
         database.child("chats").child(chatId!!).push().setValue(chatMessage)
         updateTypingStatus(false)
 
-        // Save chat summary (this example saves it under the "chats" node; adjust as needed)
+        // Save chat summary
         val chatSummary = Chat(
             receiverName = selectedUserName,
             receiverUid = selectedUserId,
@@ -242,6 +244,52 @@ class ChatActivity : AppCompatActivity() {
     private fun formatTime(timestamp: Long): String {
         val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
         return sdf.format(Date(timestamp))
+    }
+
+    private fun listenForUserNameChanges() {
+        val selectedUserRef = mDbRef.child(selectedUserId!!)
+        selectedUserRef.child("name").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val newName = snapshot.getValue(String::class.java)
+                    if (!newName.isNullOrEmpty()) {
+                        // Update UI elements that display the receiver's name
+                        binding.userName.text = newName // Update receiver's name in chat
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ChatActivity, "Failed to update user name: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        // Listen for the current user's name changes
+        val currentUserRef = mDbRef.child(currentUserId!!)
+        currentUserRef.child("name").addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    val newName = snapshot.getValue(String::class.java)
+                    if (!newName.isNullOrEmpty()) {
+                        // Update the chat messages with the new sender name if necessary
+                        updateSenderNameInMessages(newName)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ChatActivity, "Failed to update user name: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun updateSenderNameInMessages(newName: String) {
+        messages.forEach { message ->
+            if (message.senderId == currentUserId) {
+                message.senderName = newName // Update sender name in existing messages
+            }
+        }
+        chatAdapter.notifyDataSetChanged() // Notify adapter of the changes
     }
 
     private fun sendBackChatDataToMainActivity(lastMessage: String = "", timestamp: String = System.currentTimeMillis().toString()) {

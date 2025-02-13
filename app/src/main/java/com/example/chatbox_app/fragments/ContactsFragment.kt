@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.chatbox_app.R
 import com.example.chatbox_app.adapter.ContactsAdapter
 import com.example.chatbox_app.databinding.FragmentContactsBinding
 import com.example.chatbox_app.dataclass.Contact
@@ -16,11 +17,11 @@ import com.example.chatbox_app.dataclass.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
+
 class ContactsFragment : Fragment() {
 
     private lateinit var binding: FragmentContactsBinding
     private lateinit var contactsAdapter: ContactsAdapter
-
     private lateinit var auth: FirebaseAuth
     private lateinit var database: DatabaseReference
 
@@ -46,6 +47,14 @@ class ContactsFragment : Fragment() {
 
         // Fetch contacts from Firebase
         fetchContacts()
+
+        binding.searchIcon.setOnClickListener {
+            val searchFragment = SearchFragment()
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, searchFragment)
+                .addToBackStack(null)
+                .commit()
+        }
 
         return binding.root
     }

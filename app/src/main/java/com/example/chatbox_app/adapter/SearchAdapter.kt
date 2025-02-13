@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chatbox_app.R
-import com.example.chatbox_app.dataclass.ChatItem
+import com.example.chatbox_app.dataclass.User
 
 class SearchAdapter(
     private val context: Context,
-    private var chatItemList: MutableList<ChatItem>,
-    private val onChatItemClick: (ChatItem) -> Unit // Callback for item clicks
+    private var userList: MutableList<User>,
+    private val onUserClick: (User) -> Unit // Callback for item clicks
 ) : RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     class SearchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -26,24 +26,24 @@ class SearchAdapter(
     }
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
-        val chatItem = chatItemList[position]
-        holder.username.text = chatItem.username
+        val user = userList[position]
+        holder.username.text = user.name
 
         // Handle item click
         holder.itemView.setOnClickListener {
-            onChatItemClick(chatItem)
+            onUserClick(user)
         }
     }
 
     override fun getItemCount(): Int {
-        return chatItemList.size
+        return userList.size
     }
 
     // Update the list dynamically
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(newList: List<ChatItem>) {
-        chatItemList.clear()
-        chatItemList.addAll(newList)
+    fun updateList(newList: List<User>) {
+        userList.clear()
+        userList.addAll(newList)
         notifyDataSetChanged()
     }
 }
