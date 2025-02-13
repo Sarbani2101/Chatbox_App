@@ -59,9 +59,9 @@ dependencies {
 
     //noinspection UseTomlInstead,GradleDependency
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
-    //noinspection UseTomlInstead
+    //noinspection GradleDependency,UseTomlInstead
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
-    //noinspection UseTomlInstead
+    //noinspection GradleDependency,UseTomlInstead
     implementation ("com.google.firebase:firebase-auth:23.1.0")
     //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-auth-ktx")
@@ -69,7 +69,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-database:21.0.0")
     //noinspection UseTomlInstead
     implementation ("com.github.bumptech.glide:glide:4.15.1")
-    //noinspection UseTomlInstead
+    //noinspection GradleDependency,UseTomlInstead
     implementation ("com.google.firebase:firebase-firestore:25.1.1")
     //noinspection UseTomlInstead
     implementation ("com.google.firebase:firebase-storage:21.0.1")
