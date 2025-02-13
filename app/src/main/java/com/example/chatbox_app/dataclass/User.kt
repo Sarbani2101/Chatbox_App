@@ -1,7 +1,7 @@
 package com.example.chatbox_app.dataclass
 
 data class User(
-    val name: String = "",
+    var name: String = "",
     val city: String = "",
     val status: String = "Available",
     val email: String = "",

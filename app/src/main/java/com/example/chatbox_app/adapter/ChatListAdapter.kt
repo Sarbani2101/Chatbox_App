@@ -48,6 +48,7 @@ class ChatListAdapter(
                 .placeholder(R.drawable.ic_default_profile_image)
                 .into(binding.userProfileImage)
 
+            // Show unread indicator based on chat status
             binding.unreadIndicator.visibility = if (!chat.isSent && !chat.isRead) {
                 View.VISIBLE
             } else {
@@ -63,6 +64,7 @@ class ChatListAdapter(
                     markMessageAsRead(chat) // Mark message as read in the database
                 }
             }
+
             listenForUserNameChanges(chat.receiverUid)
         }
 
@@ -77,6 +79,13 @@ class ChatListAdapter(
         chat.isRead = true
         notifyItemChanged(chatList.indexOf(chat))
 
+        // Update the read status in Firebase
+        val chatRef = FirebaseDatabase.getInstance().getReference("chats").child(chat.receiverUid) // Adjust as needed
+        chatRef.child("isRead").setValue(true).addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Toast.makeText(context, "Failed to update read status", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun listenForUserNameChanges(userId: String) {
@@ -87,7 +96,6 @@ class ChatListAdapter(
                 if (snapshot.exists()) {
                     val newName = snapshot.getValue(String::class.java)
                     if (!newName.isNullOrEmpty()) {
-                        // Update the chat list with the new name
                         val chatIndex = chatList.indexOfFirst { it.receiverUid == userId }
                         if (chatIndex != -1) {
                             chatList[chatIndex].receiverName = newName

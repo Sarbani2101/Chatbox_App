@@ -1,23 +1,17 @@
+
 package com.example.chatbox_app.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.chatbox_app.R
 import com.example.chatbox_app.activities.ChatActivity
 import com.example.chatbox_app.adapter.StoriesAdapter
 import com.example.chatbox_app.databinding.FragmentMessageBinding
@@ -75,7 +69,7 @@ class MessageFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        storiesAdapter = StoriesAdapter(userList) { selectedUser ->
+        storiesAdapter = StoriesAdapter(requireContext(),userList) { selectedUser ->
             navigateToChatActivity(selectedUser.uid, selectedUser.name)
         }
         binding.storiesRecyclerView.layoutManager =
@@ -88,105 +82,6 @@ class MessageFragment : Fragment() {
         }
         binding.chatListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.chatListRecyclerView.adapter = chatListAdapter
-
-        enableSwipeToDelete()
-    }
-
-    private fun enableSwipeToDelete() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean {
-                return false
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val chatToDelete = chatList[position]
-
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Delete Chat")
-                    .setMessage("Are you sure you want to delete ?")
-                    .setPositiveButton("Yes") { _, _ ->
-                        deleteChatFromFirebase(chatToDelete, position)
-                    }
-                    .setNegativeButton("No") { dialog, _ ->
-                        chatListAdapter.notifyItemChanged(position)
-                        dialog.dismiss()
-                    }
-                    .show()
-            }
-
-            override fun onChildDraw(
-
-                c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean
-            ) {
-                val itemView = viewHolder.itemView
-                val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_trash)!!
-
-                val iconMargin = (itemView.height - icon.intrinsicHeight) / 2
-                val iconTop = itemView.top + (itemView.height - icon.intrinsicHeight) / 2
-                val iconBottom = iconTop + icon.intrinsicHeight
-
-                val background = ColorDrawable(Color.RED)
-                background.setBounds(
-                    itemView.right + dX.toInt(),
-                    itemView.top,
-                    itemView.right,
-                    itemView.bottom
-                )
-                background.draw(c)
-
-                val iconLeft = itemView.right - iconMargin - icon.intrinsicWidth
-                val iconRight = itemView.right - iconMargin
-                icon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                icon.draw(c)
-
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(binding.chatListRecyclerView)
-    }
-
-    private fun deleteChatFromFirebase(chat: Chat, position: Int) {
-        val currentUser = mAuth.currentUser?.uid ?: return
-
-        // Check if the position is valid before proceeding
-        if (position < 0 || position >= chatList.size) {
-            Toast.makeText(context, "Invalid chat index.", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val senderChatRef = mDbRef.child("chats").child(currentUser).child(chat.receiverUid)
-        val receiverChatRef = mDbRef.child("chats").child(chat.receiverUid).child(currentUser)
-
-        senderChatRef.removeValue().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                receiverChatRef.removeValue().addOnCompleteListener { task2 ->
-                    if (task2.isSuccessful) {
-                        if (chatList.contains(chat)) {
-                            chatList.removeAt(position)
-                            chatListAdapter.notifyItemRemoved(position)
-                            binding.txtNomsg.visibility = if (chatList.isEmpty()) View.VISIBLE else View.GONE
-                        }
-                        else {
-                            Toast.makeText(context, "Deleted.", Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(context, "Failed to delete chat for the receiver.", Toast.LENGTH_SHORT).show()
-                        chatListAdapter.notifyItemChanged(position)
-                    }
-                }
-            } else {
-                Toast.makeText(context, "Failed to delete chat.", Toast.LENGTH_SHORT).show()
-                chatListAdapter.notifyItemChanged(position)
-            }
-        }
     }
 
     private fun navigateToChatActivity(selectedUserId: String, selectedUserName: String) {
@@ -334,18 +229,19 @@ class MessageFragment : Fragment() {
                     val chatMap = mutableMapOf<String, Chat>()
 
                     for (data in snapshot.children) {
+                        // Safely get the Chat object from the snapshot
                         val chat = data.getValue(Chat::class.java)
-                        chat?.let {
-                            chatMap[it.receiverUid] = it
+                        if (chat != null) {
+                            chatMap[chat.receiverUid] = chat
                             // Fetch user name if it's unknown
-                            if (it.receiverName == "Unknown" || it.receiverName.isEmpty()) {
-                                mDbRef.child("users").child(it.receiverUid)
+                            if (chat.receiverName.isEmpty() || chat.receiverName == "Unknown") {
+                                mDbRef.child("users").child(chat.receiverUid)
                                     .addListenerForSingleValueEvent(object : ValueEventListener {
                                         override fun onDataChange(userSnapshot: DataSnapshot) {
                                             if (!isAdded || _binding == null) return
 
                                             val actualName = userSnapshot.child("name").getValue(String::class.java) ?: "Unknown"
-                                            it.receiverName = actualName
+                                            chat.receiverName = actualName
                                             // Update the chat list UI with the new name
                                             updateChatListUI(chatMap)
                                         }
@@ -355,6 +251,9 @@ class MessageFragment : Fragment() {
                                         }
                                     })
                             }
+                        } else {
+                            // Log an error if the chat could not be deserialized
+                            Log.e("MessageFragment", "Chat data is null or not in the correct format for: ${data.value}")
                         }
                     }
                     updateChatListUI(chatMap)
