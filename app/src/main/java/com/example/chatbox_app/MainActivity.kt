@@ -9,10 +9,6 @@ import com.example.chatbox_app.fragments.CallsFragment
 import com.example.chatbox_app.fragments.ContactsFragment
 import com.example.chatbox_app.fragments.MessageFragment
 import com.example.chatbox_app.fragments.SettingsFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {

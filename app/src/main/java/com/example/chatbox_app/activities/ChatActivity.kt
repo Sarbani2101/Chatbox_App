@@ -283,6 +283,7 @@ class ChatActivity : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun updateSenderNameInMessages(newName: String) {
         messages.forEach { message ->
             if (message.senderId == currentUserId) {
