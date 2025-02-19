@@ -9,5 +9,5 @@ data class Chat(
     var timestamp: Long = 0L,
     val profileImageUrl: String = "",
     var isRead: Boolean = false,
-    var isSent: Boolean = false // NEW FIELD to track received messages
+    var isSent: Boolean = false // Field to track received messages
 )

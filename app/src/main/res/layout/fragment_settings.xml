@@ -69,45 +69,49 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="40dp"
+            android:background="@drawable/recyclerview_bg"
             android:orientation="vertical"
-            android:background="@drawable/recyclerview_bg">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
                 android:layout_margin="16dp"
                 android:background="@color/white"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="12dp">
 
                 <!-- User Profile Image -->
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/userProfileImage"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_default_profile_image"
-                    android:contentDescription="User Profile"
                     android:layout_marginEnd="12dp"
+                    android:contentDescription="User Profile"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_default_profile_image"
                     tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
                     android:id="@+id/linearUsername"
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_marginStart="24dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="24dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <!-- User Name -->
                     <TextView
                         android:id="@+id/settingsName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="User Name"
                         android:fontFamily="@font/caros_font"
+                        android:text="User Name"
                         android:textColor="@android:color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -130,8 +134,8 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@drawable/ic_qr"
                     android:layout_margin="16dp"
+                    android:src="@drawable/ic_qr"
                     tools:ignore="ContentDescription" />
 
             </LinearLayout>
@@ -140,8 +144,8 @@
                 android:id="@+id/settingProgress"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:visibility="gone"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -153,28 +157,28 @@
                     android:id="@+id/keyImg"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_keys"
-                    android:contentDescription="User Profile"
                     android:layout_margin="12dp"
+                    android:contentDescription="User Profile"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_keys"
                     tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
                     android:id="@+id/linearAcc"
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <!-- User Name -->
                     <TextView
                         android:id="@+id/account"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Account"
                         android:fontFamily="@font/caros_font"
+                        android:text="Account"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -206,28 +210,28 @@
                     android:id="@+id/chatImg"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_chats"
-                    android:contentDescription="User Profile"
                     android:layout_margin="12dp"
+                    android:contentDescription="User Profile"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_chats"
                     tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
                     android:id="@+id/linearChat"
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <!-- User Name -->
                     <TextView
                         android:id="@+id/chat"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Chat"
                         android:fontFamily="@font/caros_font"
+                        android:text="Chat"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -239,8 +243,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:maxLines="1"
                         android:fontFamily="@font/circular_font"
+                        android:maxLines="1"
                         android:text="Chat history,theme,wallpapers"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
@@ -259,27 +263,27 @@
                     android:id="@+id/notiImg"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_notification"
-                    android:contentDescription="User Profile"
                     android:layout_margin="12dp"
+                    android:contentDescription="User Profile"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_notification"
                     tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <!-- User Name -->
                     <TextView
                         android:id="@+id/notification"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Notifications"
                         android:fontFamily="@font/caros_font"
+                        android:text="Notifications"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -291,8 +295,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:maxLines="1"
                         android:fontFamily="@font/circular_font"
+                        android:maxLines="1"
                         android:text="Messages, group and others"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
@@ -311,27 +315,27 @@
                     android:id="@+id/helpImg"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_help"
-                    android:contentDescription="User Profile"
                     android:layout_margin="12dp"
+                    android:contentDescription="User Profile"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_help"
                     tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <!-- User Name -->
                     <TextView
                         android:id="@+id/help"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Help"
                         android:fontFamily="@font/caros_font"
+                        android:text="Help"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -343,8 +347,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
-                        android:maxLines="1"
                         android:fontFamily="@font/circular_font"
+                        android:maxLines="1"
                         android:text="Help center,contact us, privacy policy"
                         android:textColor="@android:color/darker_gray"
                         android:textSize="12sp"
@@ -363,27 +367,27 @@
                     android:id="@+id/dataImg"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_data"
-                    android:contentDescription="User Profile"
                     android:layout_margin="12dp"
+                    android:contentDescription="User Profile"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_data"
                     tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <!-- User Name -->
                     <TextView
                         android:id="@+id/data"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Storage and Data"
                         android:fontFamily="@font/caros_font"
+                        android:text="Storage and Data"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"
@@ -415,27 +419,27 @@
                     android:id="@+id/usersImg"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/ic_users"
-                    android:contentDescription="User Profile"
                     android:layout_margin="12dp"
+                    android:contentDescription="User Profile"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/ic_users"
                     tools:ignore="HardcodedText" />
 
                 <!-- Chat Details -->
                 <LinearLayout
-                    android:orientation="vertical"
                     android:layout_width="0dp"
-                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <!-- User Name -->
                     <TextView
                         android:id="@+id/users"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Invite a friend"
                         android:fontFamily="@font/caros_font"
+                        android:text="Invite a friend"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
                         android:textStyle="bold"

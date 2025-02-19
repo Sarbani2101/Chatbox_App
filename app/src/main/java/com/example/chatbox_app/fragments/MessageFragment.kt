@@ -1,4 +1,3 @@
-
 package com.example.chatbox_app.fragments
 
 import android.annotation.SuppressLint
@@ -28,7 +27,6 @@ import kotlin.math.sqrt
 
 @Suppress("DEPRECATION")
 class MessageFragment : Fragment() {
-
     private var _binding: FragmentMessageBinding? = null
     private val binding get() = _binding!!
 
@@ -69,14 +67,13 @@ class MessageFragment : Fragment() {
     }
 
     private fun setupRecyclerViews() {
-        storiesAdapter = StoriesAdapter(requireContext(),userList) { selectedUser ->
+        storiesAdapter = StoriesAdapter(requireContext(), userList) { selectedUser ->
             navigateToChatActivity(selectedUser.uid, selectedUser.name)
         }
-        binding.storiesRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.storiesRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.storiesRecyclerView.adapter = storiesAdapter
 
-        chatListAdapter = ChatListAdapter(requireContext(),chatList) { selectedChat ->
+        chatListAdapter = ChatListAdapter(requireContext(), chatList) { selectedChat ->
             navigateToChatActivity(selectedChat)
             binding.txtNomsg.visibility = View.VISIBLE
         }
@@ -154,8 +151,16 @@ class MessageFragment : Fragment() {
         )
 
         // Save both chat records in Firebase
-        senderChatRef.setValue(senderChat)
-        receiverChatRef.setValue(receiverChat)
+        senderChatRef.setValue(senderChat).addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.e("MessageFragment", "Failed to save sender chat: ${task.exception?.message}")
+            }
+        }
+        receiverChatRef.setValue(receiverChat).addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.e("MessageFragment", "Failed to save receiver chat: ${task.exception?.message}")
+            }
+        }
 
         // Update the local chat list (for the sender) accordingly.
         val existingChatIndex = chatList.indexOfFirst { it.receiverUid == receiverUid }
@@ -229,10 +234,14 @@ class MessageFragment : Fragment() {
                     val chatMap = mutableMapOf<String, Chat>()
 
                     for (data in snapshot.children) {
+                        // Log the raw data snapshot to inspect its structure
+                        Log.d("MessageFragment", "Raw chat data: ${data.value}")
+
                         // Safely get the Chat object from the snapshot
                         val chat = data.getValue(Chat::class.java)
                         if (chat != null) {
                             chatMap[chat.receiverUid] = chat
+
                             // Fetch user name if it's unknown
                             if (chat.receiverName.isEmpty() || chat.receiverName == "Unknown") {
                                 mDbRef.child("users").child(chat.receiverUid)
@@ -272,7 +281,6 @@ class MessageFragment : Fragment() {
         chatList.clear()
         chatList.addAll(chatMap.values)
         chatList.sortByDescending { it.timestamp }
-        chatListAdapter.notifyDataSetChanged()
 
         if (chatList.isEmpty()) {
             binding.txtNomsg.visibility = View.VISIBLE
@@ -280,6 +288,7 @@ class MessageFragment : Fragment() {
             binding.txtNomsg.visibility = View.GONE
         }
 
+        chatListAdapter.notifyDataSetChanged() // Call this only once
         chatsLoaded = true
         checkDataLoadingComplete()
     }
@@ -311,45 +320,56 @@ class MessageFragment : Fragment() {
         mDbRef.child("chats").child(currentUserId).addChildEventListener(object : ChildEventListener {
             @SuppressLint("NotifyDataSetChanged")
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                val chat = snapshot.getValue(Chat::class.java)
-                chat?.let {
-                    // Check if the chat already exists in the list
-                    val existingChatIndex = chatList.indexOfFirst { it.receiverUid == chat.receiverUid }
-                    if (existingChatIndex != -1) {
-                        // Update existing chat
-                        chatList[existingChatIndex] = chat
+                Log.d("MessageFragment", "New chat data: ${snapshot.value}") // Log raw data
+                try {
+                    // Attempt to deserialize the chat data
+                    val chat = snapshot.getValue(Chat::class.java)
+                    if (chat != null) {
+                        // Check if the chat already exists in the list
+                        val existingChatIndex = chatList.indexOfFirst { it.receiverUid == chat.receiverUid }
+                        if (existingChatIndex != -1) {
+                            // Update existing chat
+                            chatList[existingChatIndex] = chat
+                        } else {
+                            // Add new chat to the list
+                            chatList.add(chat)
+                        }
+                        chatList.sortByDescending { it.timestamp } // Sort chats by timestamp
+                        chatListAdapter.notifyDataSetChanged() // Notify adapter of changes
                     } else {
-                        // Add new chat to the list
-                        chatList.add(chat)
+                        // Log an error if the chat could not be deserialized
+                        Log.e("MessageFragment", "Failed to deserialize chat data: ${snapshot.value}")
                     }
-                    chatList.sortByDescending { it.timestamp } // Sort chats by timestamp
-                    chatListAdapter.notifyDataSetChanged() // Notify adapter of changes
+                } catch (e: Exception) {
+                    Log.e("MessageFragment", "Error processing chat data: ${e.message}")
                 }
             }
 
             override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                // Handle chat updates if needed
                 val updatedChat = snapshot.getValue(Chat::class.java)
-                updatedChat?.let {
+                if (updatedChat != null) {
                     // Update the existing chat in the list
                     val existingChatIndex = chatList.indexOfFirst { it.receiverUid == updatedChat.receiverUid }
                     if (existingChatIndex != -1) {
                         chatList[existingChatIndex] = updatedChat
                         chatListAdapter.notifyItemChanged(existingChatIndex) // Notify adapter of the update
                     }
+                } else {
+                    Log.e("MessageFragment", "Failed to deserialize updated chat data: ${snapshot.value}")
                 }
             }
 
             override fun onChildRemoved(snapshot: DataSnapshot) {
-                // Handle chat removal if needed
                 val removedChat = snapshot.getValue(Chat::class.java)
-                removedChat?.let {
+                if (removedChat != null) {
                     // Remove the chat from the list
                     val existingChatIndex = chatList.indexOfFirst { it.receiverUid == removedChat.receiverUid }
                     if (existingChatIndex != -1) {
                         chatList.removeAt(existingChatIndex)
                         chatListAdapter.notifyItemRemoved(existingChatIndex) // Notify adapter of the removal
                     }
+                } else {
+                    Log.e("MessageFragment", "Failed to deserialize removed chat data: ${snapshot.value}")
                 }
             }
 
